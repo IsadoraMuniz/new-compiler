@@ -1,30 +1,15 @@
-int vet[ 10 ];
-int f;int y;int r; int h;
+int gdc (int u, int v)
+{
+   if (v == 0) return u;
+   else return gdc(v,u-u/v*v);
 
-void teste(int p){
-	int z;
 }
 
-int maisTeste(int s, int r){
-
-	int l;
-	l= s;
-	return l;
-}
-
-int minloc ( int a[], int low, int high )
-{	int i; int x; int k;int o;
-	k = low;
-	x = a[low];
-	i = low + 1;
-	teste(i);
-	o = maisTeste(x, k);
-	while (i < high){
-		if (a[i] < x){
-			x = a[i];
-			k = i;
-		}
-		i = i + 1;
-	}
-	return k;
+void main(void)
+{
+   int x;
+   int y;
+   x = input();
+   y = input();
+   output(gdc(x,y));
 }
