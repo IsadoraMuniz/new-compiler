@@ -8,10 +8,6 @@
 #include "symtab.h"
 #include "analyze.h"
 
-// static void typeError(TreeNode * t, char * message)
-// { fprintf(listing,"Erro de tipo em %s na linha %d: %s\n",t->attr.name, t->lineno,message);
-//   Error = TRUE;
-// }
 
 /* counter for variable memory locations */
 static int location = 0;
@@ -152,51 +148,7 @@ static void insertNode( TreeNode * t)
 }
 
 
-			// case callK:
-
-			// 	if (st_lookup(t->attr.name, t->attr.scope) == -1 && st_lookup(t->attr.name, "global") == -1 )
-      //       		typeError(t,"Erro semantico: Chamada Invalida. Nao foi declarada.");	
-
-      //     		else
-      //       		st_insert(t->attr.name,t->lineno,location++, t->attr.scope, "call", "-"); 
-		  /*case idK:
-			if (st_lookup(t->attr.name, t->attr.scope) == -1 && st_lookup(t->attr.name, "global") == -1)
-				 typeError(t,"Erro semantico : variavel nao foi declarado");
-			else
-            	st_insert(t->attr.name,t->lineno,0, t->attr.scope, "variable", "integer");	
-	      break;
-	      case vectorK:
-	      	if (st_lookup(t->attr.name, t->attr.scope) == -1 && st_lookup(t->attr.name, "global") == -1)
-				 typeError(t,"Erro semantico : nao foi declarado");
-			else
-            	st_insert(t->attr.name,t->lineno,0, t->attr.scope, "vector", "integer");	
-		  break;
-		  case vectorIdK:
-		  	if (st_lookup(t->attr.name, t->attr.scope) == -1 && st_lookup(t->attr.name, "global") == -1)
-				 typeError(t,"Erro semantico : nao foi declarado");
-			else
-            	st_insert(t->attr.name,t->lineno,0, t->attr.scope, "vector index", "integer");	
-		  case typeK:
-          break;
-        default:
-        break;
-      }
-   			  case returnK:
-          
-          break;
-
-            case paramK:
-                st_insert(t->attr.name,t->lineno,location++, t->attr.scope,"variable", "integer");
-            break;
-
-      default:
-      break;
-      
-      break;
-     
-  }
-}*/
-
+			
 void buildSymtab(TreeNode * syntaxTree)
 { 
     
@@ -251,42 +203,6 @@ void checkNode(TreeNode * t)
   }
 }
 
-// static void checkNode(TreeNode * t)
-// { switch (t->nodekind)
-//   { 
-//    case expressionK:
-//       switch (t->kind.exp)
-//       { 
-//         case operationK:
-//         break;
-//         default:
-//         break;
-//       }
-//       break;
-//     case statementK:
-//       switch (t->kind.stmt)
-//       { 
-//         case ifK:
-//           if (t->child[0]->type == integerK && t->child[1]->type == integerK)
-//            typeError(t->child[0],"se teste nao eh Boolean");
-//         break;
-//         case assignK:
-//           if (t->child[0]->type == voidK || t->child[1]->type == voidK)
-//             typeError(t->child[0],"atribuicao de valor nao-inteiro");
-// 		  else if(t->child[1]->kind.stmt == callK)
-// 		  {
-// 		    if(strcmp(st_lookup_type(t->child[1]->attr.name, "global"), "void")==0)
-// 				typeError(t->child[1],"atribuicao de returno vazio");
-// 			}
-//         break;
-//         default:
-//         break;
-//       }
-//     break;
-//     default:
-//     break;
-//   }
-// }
 
 void typeCheck(TreeNode * syntaxTree)
 { 
