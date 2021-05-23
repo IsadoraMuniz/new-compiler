@@ -1,42 +1,34 @@
 /****************************************************/
-/* File: main.c                                     */
-/* Main program for TINY compiler                   */
-/* Compiler Construction: Principles and Practice   */
-/* Daiana Santos e Isadora Muniz                    */
+/*                      Main                        */
+/*                  Isadora Muniz                   */
 /****************************************************/
 
 #include "globals.h"
 
-/* set NO_PARSE to TRUE to get a scanner-only compiler */
 #define NO_PARSE FALSE
-/* set NO_ANALYZE to TRUE to get a parser-only compiler */
+
 #define NO_ANALYZE FALSE
 
-/* set NO_CODE to TRUE to get a compiler that does not
- * generate code
- */
-#define NO_CODE TRUE
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
-#include "scan.h"
 #else
 #include "parse.h"
 #if !NO_ANALYZE
 #include "analyze.h"
 #if !NO_CODE
-//#include "cgen.h"
+#include "cgen.h"
 #endif
 #endif
 #endif
 
-/* allocate global variables */
-int lineno = 1;
+
+int lineno = 0;
 FILE * source;
 FILE * listing;
 FILE * code;
 
-/* allocate and set tracing flags */
 int EchoSource = FALSE;
 int TraceScan = TRUE;
 int TraceParse = TRUE;
@@ -47,7 +39,7 @@ int Error = FALSE;
 
 int main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
-  char pgm[120]; /* source code file name */
+  char pgm[120];
   if (argc != 2)
     { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
       exit(1);
@@ -57,48 +49,35 @@ int main( int argc, char * argv[] )
      strcat(pgm,".cms");
   source = fopen(pgm,"r");
   if (source==NULL)
-  { fprintf(stderr,"File %s not found\n",pgm);
+  { fprintf(stderr,"Arquivo %s nao encontrado\n",pgm);
     exit(1);
   }
   listing = stdout; /* send listing to screen */
-  fprintf(listing,"\nCompilador C menos: %s\n",pgm);
+  fprintf(listing,"\n\n\n           Compilador C menos: %s\n",pgm);
 #if NO_PARSE
   while (getToken()!=ENDFILE);
 #else
   syntaxTree = parse();
   if (TraceParse) {
-    fprintf(listing,"\nArvore Sintatica:\n");
+    fprintf(listing,"\n\n\n           Arvore Sintatica:\n");
     printTree(syntaxTree);
   }
 #if !NO_ANALYZE
- // if (Error)
-  //{ 
-if (TraceAnalyze) fprintf(listing,"\nConstruindo Tabela de Simbolos...\n");
+
+  if (! Error){
+    fprintf(listing,"\n\n\n           Construindo Tabela de Simbolos...\n");
     buildSymtab(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nChecando tipos...\n");
-    typeCheck(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nChecagem de tipos terminada\n");
- // }
+  } 
+    
 #if !NO_CODE
- // if (!Error)
-//  {
- char * codefile;
-    int fnlen = strcspn(pgm,".");
-    codefile = (char *) calloc(fnlen+4, sizeof(char));
-    strncpy(codefile,pgm,fnlen);
-    strcat(codefile,".tm");
-    code = fopen(codefile,"w");
-    if (code == NULL)
-    { printf("Unable to open %s\n",codefile);
-      exit(1);
-    }
-    codeGen(syntaxTree,codefile);
-    fclose(code);
- // }
+  if (! Error)
+  { 
+    fprintf(listing,"\n\n\n           Quadruplas Gerador de Codigo:\n\n");
+    code_gen(syntaxTree);
+  }
 #endif
 #endif
 #endif
   fclose(source);
   return 0;
 }
-

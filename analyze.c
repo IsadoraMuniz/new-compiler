@@ -1,7 +1,7 @@
 /****************************************************/
-/* 					                                */
-/* Analisador Semantico                             */
-/* Daiana Santos e Isadora Muniz                    */
+/* 					                                        */
+/*               Analisador Semantico               */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #include "globals.h"
@@ -9,7 +9,7 @@
 #include "analyze.h"
 
 
-/* counter for variable memory locations */
+
 static int location = 0;
 char* escopo = "global";
 
@@ -18,11 +18,6 @@ void atualizaEscopo(TreeNode * t)
   if (t->child[0] != NULL && t->child[0]->kind.exp == functionK) escopo = t->child[0]->attr.name;
 }
 
-/* Procedure traverse is a generic recursive 
- * syntax tree traversal routine:
- * it applies preProc in preorder and postProc 
- * in postorder to tree pointed to by t
- */
 static void traverse( TreeNode * t,
                void (* preProc) (TreeNode *),
                void (* postProc) (TreeNode *) )
@@ -43,10 +38,6 @@ static void traverse( TreeNode * t,
   	}
 }
 
-/* nullProc is a do-nothing procedure to 
- * generate preorder-only or postorder-only
- * traversals from traverse
- */
 static void nullProc(TreeNode * t)
 { 
 	if (t==NULL) 
@@ -55,10 +46,6 @@ static void nullProc(TreeNode * t)
 		return;
 }
 
-/* Procedure insertNode inserts 
- * identifiers stored in t into 
- * the symbol table 
- */
 static void insertNode( TreeNode * t)
 { 
 	
@@ -68,12 +55,12 @@ static void insertNode( TreeNode * t)
       if(t->kind.stmt == assignK)
       {
           if (st_lookup(t->child[0]->attr.name) == -1){
-          /* não encontrado na tabela, cariavel não declarada */
+         
             fprintf(listing,"Erro: A variavel %s não foi declarada. [%d]\n", t->child[0]->attr.name, t->lineno);
             Error = TRUE;
           }
           else
-          /* encontrada na tabela, verificar escopo e adicionar linha */
+          
             st_insert(t->child[0]->attr.name,t->lineno,0,escopo,INTTYPE,VAR);
           t->child[0]->add = 1;
       }
@@ -90,22 +77,22 @@ static void insertNode( TreeNode * t)
               {
                 case variableK:
                   if (st_lookup(t->attr.name) == -1){
-                /* não encontrado na tabela, inserir*/
+               
                   st_insert(t->child[0]->attr.name,t->lineno,location++, escopo,INTTYPE, VAR);
                   
                 }
                 else
-                /* encontrado na tabela, verificar escopo */
+                
                   st_insert(t->child[0]->attr.name,t->lineno,0, escopo,INTTYPE, VAR);
                 break;
 
                 case functionK:
                   if (st_lookup(t->attr.name) == -1){
-                /* não encontrado na tabela, inserir*/
+                
                   st_insert(t->child[0]->attr.name,t->child[0]->lineno,location++, "global",t->child[0]->type,FUN);
               }
                 else
-                /* encontrado na tabela, verificar escopo */
+                
                   fprintf(listing,"Erro: Multiplas declarações da função %s. [%d]\n", t->child[0]->attr.name, t->lineno);
               
               break;

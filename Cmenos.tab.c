@@ -499,13 +499,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    33,    33,    38,    50,    53,    55,    58,    70,    84,
-      92,   102,   118,   130,   132,   141,   154,   157,   173,   189,
-     203,   216,   218,   231,   233,   235,   237,   239,   241,   243,
-     249,   251,   254,   261,   270,   277,   282,   289,   296,   299,
-     301,   308,   315,   318,   324,   330,   336,   342,   349,   356,
-     362,   365,   370,   377,   383,   386,   391,   397,   399,   401,
-     403,   406,   424,   437,   439,   442,   445,   451
+       0,    33,    33,    38,    50,    53,    55,    58,    69,    83,
+      91,   101,   113,   125,   127,   136,   149,   152,   161,   170,
+     184,   197,   199,   212,   214,   216,   218,   220,   222,   224,
+     230,   232,   235,   242,   251,   258,   262,   269,   276,   279,
+     281,   288,   295,   298,   304,   310,   316,   322,   329,   336,
+     342,   345,   350,   357,   363,   366,   371,   377,   379,   381,
+     383,   386,   396,   409,   411,   414,   417,   423
 };
 #endif
 
@@ -1517,7 +1517,6 @@ yyreduce:
                 (yyval)->type = integerK;
                 (yyval)->size = 1;
                 (yyval)->child[0] = (yyvsp[(2) - (3)]);
-                //$2->nodekind = statementK;
                 (yyvsp[(2) - (3)])->kind.stmt = variableK;
                 (yyvsp[(2) - (3)])->type = INTTYPE;
                 }
@@ -1525,7 +1524,7 @@ yyreduce:
 
   case 8:
 /* Line 1787 of yacc.c  */
-#line 71 "Cmenos.y"
+#line 70 "Cmenos.y"
     {
                     (yyval) = newExpNode(typeK);
                     (yyval)->type = integerK;
@@ -1541,7 +1540,7 @@ yyreduce:
 
   case 9:
 /* Line 1787 of yacc.c  */
-#line 85 "Cmenos.y"
+#line 84 "Cmenos.y"
     {
 			(yyval) = newExpNode(typeK);
 			(yyval)->type = integerK;
@@ -1553,7 +1552,7 @@ yyreduce:
 
   case 10:
 /* Line 1787 of yacc.c  */
-#line 93 "Cmenos.y"
+#line 92 "Cmenos.y"
     {
 			(yyval) = newExpNode(typeK);
 			(yyval)->type = voidK;
@@ -1565,7 +1564,7 @@ yyreduce:
 
   case 11:
 /* Line 1787 of yacc.c  */
-#line 103 "Cmenos.y"
+#line 102 "Cmenos.y"
     {
                         (yyval) = newExpNode(typeK);
  			            (yyval)->attr.name = "INT";
@@ -1576,16 +1575,12 @@ yyreduce:
 			            (yyvsp[(2) - (6)])->nodekind = expressionK;
                        	(yyvsp[(2) - (6)])->kind.exp = functionK;
 
-							/*$2->type = $1->type;
-							$4->type = $1->type;
-							aggScope($2->child[0], $2->attr.name);
-							aggScope($2->child[1], $2->attr.name);*/
                  }
     break;
 
   case 12:
 /* Line 1787 of yacc.c  */
-#line 119 "Cmenos.y"
+#line 114 "Cmenos.y"
     {
 			(yyval) = newExpNode(typeK);
  			(yyval)->attr.name = "VOID";
@@ -1600,13 +1595,13 @@ yyreduce:
 
   case 13:
 /* Line 1787 of yacc.c  */
-#line 131 "Cmenos.y"
+#line 126 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 14:
 /* Line 1787 of yacc.c  */
-#line 133 "Cmenos.y"
+#line 128 "Cmenos.y"
     {
             (yyval) = newExpNode(typeK);
             (yyval)->attr.name = "VOID";
@@ -1617,7 +1612,7 @@ yyreduce:
 
   case 15:
 /* Line 1787 of yacc.c  */
-#line 142 "Cmenos.y"
+#line 137 "Cmenos.y"
     {
                            YYSTYPE t = (yyvsp[(1) - (3)]);
                            if(t != NULL)
@@ -1634,25 +1629,18 @@ yyreduce:
 
   case 16:
 /* Line 1787 of yacc.c  */
-#line 155 "Cmenos.y"
+#line 150 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 17:
 /* Line 1787 of yacc.c  */
-#line 158 "Cmenos.y"
+#line 153 "Cmenos.y"
     {
 			    (yyval) = (yyvsp[(1) - (2)]);
                 (yyval)->child[0] = (yyvsp[(2) - (2)]);
                 (yyval)->child[0]->kind.exp = paramK;
-                
-                
-                /*$$ = newExpNode(typeK);
-                $2->nodekind = statementK;
-                $2->kind.stmt = variableK;
-                $$->type = integerK;
-			    $2->type = INTTYPE;
-                $$->child[0] = $2;*/
+ 
 
                           
             }
@@ -1660,26 +1648,19 @@ yyreduce:
 
   case 18:
 /* Line 1787 of yacc.c  */
-#line 174 "Cmenos.y"
+#line 162 "Cmenos.y"
     {
                 (yyval) = (yyvsp[(1) - (4)]);
                 (yyval)->size = 0;
                 (yyval)->child[0] = (yyvsp[(2) - (4)]);
                 (yyval)->child[0]->kind.exp = paramK;
 
-
-			   /* $$ = newExpNode(typeK);
-                $2->nodekind = statementK;
-                $2->kind.stmt = variableK;
-                $$->type = integerK;
-				$2->type = INTTYPE;
-                $$->child[0] = $2;*/
             }
     break;
 
   case 19:
 /* Line 1787 of yacc.c  */
-#line 190 "Cmenos.y"
+#line 171 "Cmenos.y"
     {
                             YYSTYPE t = (yyvsp[(2) - (4)]);
                             if(t != NULL)
@@ -1696,7 +1677,7 @@ yyreduce:
 
   case 20:
 /* Line 1787 of yacc.c  */
-#line 204 "Cmenos.y"
+#line 185 "Cmenos.y"
     {
                             YYSTYPE t = (yyvsp[(1) - (2)]);
                             if(t != NULL)
@@ -1713,7 +1694,7 @@ yyreduce:
 
   case 22:
 /* Line 1787 of yacc.c  */
-#line 219 "Cmenos.y"
+#line 200 "Cmenos.y"
     {
                            YYSTYPE t = (yyvsp[(1) - (2)]);
                            if(t != NULL)
@@ -1730,37 +1711,37 @@ yyreduce:
 
   case 24:
 /* Line 1787 of yacc.c  */
-#line 234 "Cmenos.y"
+#line 215 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 25:
 /* Line 1787 of yacc.c  */
-#line 236 "Cmenos.y"
+#line 217 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 26:
 /* Line 1787 of yacc.c  */
-#line 238 "Cmenos.y"
+#line 219 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 27:
 /* Line 1787 of yacc.c  */
-#line 240 "Cmenos.y"
+#line 221 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 28:
 /* Line 1787 of yacc.c  */
-#line 242 "Cmenos.y"
+#line 223 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 29:
 /* Line 1787 of yacc.c  */
-#line 244 "Cmenos.y"
+#line 225 "Cmenos.y"
     { 
 					(yyval) = newExpNode(operationK);
                     (yyval)->attr.op = ERR;
@@ -1770,19 +1751,19 @@ yyreduce:
 
   case 30:
 /* Line 1787 of yacc.c  */
-#line 250 "Cmenos.y"
+#line 231 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (2)]); }
     break;
 
   case 31:
 /* Line 1787 of yacc.c  */
-#line 252 "Cmenos.y"
+#line 233 "Cmenos.y"
     { }
     break;
 
   case 32:
 /* Line 1787 of yacc.c  */
-#line 255 "Cmenos.y"
+#line 236 "Cmenos.y"
     {
                              (yyval) = newStmtNode(ifK);
                              (yyval)->child[0] = (yyvsp[(3) - (5)]);
@@ -1792,7 +1773,7 @@ yyreduce:
 
   case 33:
 /* Line 1787 of yacc.c  */
-#line 262 "Cmenos.y"
+#line 243 "Cmenos.y"
     {
 							 
                              (yyval) = newStmtNode(ifK);
@@ -1804,7 +1785,7 @@ yyreduce:
 
   case 34:
 /* Line 1787 of yacc.c  */
-#line 271 "Cmenos.y"
+#line 252 "Cmenos.y"
     {
                              (yyval) = newStmtNode(whileK);
                              (yyval)->child[0] = (yyvsp[(3) - (5)]);
@@ -1814,16 +1795,15 @@ yyreduce:
 
   case 35:
 /* Line 1787 of yacc.c  */
-#line 278 "Cmenos.y"
+#line 259 "Cmenos.y"
     {
                             (yyval) = newStmtNode(returnK);
-							//$$->type = voidK;
                    }
     break;
 
   case 36:
 /* Line 1787 of yacc.c  */
-#line 283 "Cmenos.y"
+#line 263 "Cmenos.y"
     {
                             (yyval) = newStmtNode(returnK);
                             (yyval)->child[0] = (yyvsp[(2) - (3)]);
@@ -1832,7 +1812,7 @@ yyreduce:
 
   case 37:
 /* Line 1787 of yacc.c  */
-#line 291 "Cmenos.y"
+#line 271 "Cmenos.y"
     {
                             (yyval) = newStmtNode(assignK);
                             (yyval)->child[0] = (yyvsp[(1) - (3)]);
@@ -1842,19 +1822,19 @@ yyreduce:
 
   case 38:
 /* Line 1787 of yacc.c  */
-#line 297 "Cmenos.y"
+#line 277 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 39:
 /* Line 1787 of yacc.c  */
-#line 300 "Cmenos.y"
+#line 280 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 40:
 /* Line 1787 of yacc.c  */
-#line 302 "Cmenos.y"
+#line 282 "Cmenos.y"
     {
                 (yyval) = (yyvsp[(1) - (4)]);
                 (yyval)->type = INTTYPE;
@@ -1864,7 +1844,7 @@ yyreduce:
 
   case 41:
 /* Line 1787 of yacc.c  */
-#line 309 "Cmenos.y"
+#line 289 "Cmenos.y"
     {
                     (yyval) = (yyvsp[(2) - (3)]);
                     (yyval)->child[0] = (yyvsp[(1) - (3)]);
@@ -1874,13 +1854,13 @@ yyreduce:
 
   case 42:
 /* Line 1787 of yacc.c  */
-#line 315 "Cmenos.y"
+#line 295 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 43:
 /* Line 1787 of yacc.c  */
-#line 319 "Cmenos.y"
+#line 299 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = MEIGL;                            
@@ -1890,7 +1870,7 @@ yyreduce:
 
   case 44:
 /* Line 1787 of yacc.c  */
-#line 325 "Cmenos.y"
+#line 305 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = MEN;                            
@@ -1900,7 +1880,7 @@ yyreduce:
 
   case 45:
 /* Line 1787 of yacc.c  */
-#line 331 "Cmenos.y"
+#line 311 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = MAI;                            
@@ -1910,7 +1890,7 @@ yyreduce:
 
   case 46:
 /* Line 1787 of yacc.c  */
-#line 337 "Cmenos.y"
+#line 317 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = MAIGL;                            
@@ -1920,7 +1900,7 @@ yyreduce:
 
   case 47:
 /* Line 1787 of yacc.c  */
-#line 343 "Cmenos.y"
+#line 323 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = IGLIGL;  
@@ -1930,7 +1910,7 @@ yyreduce:
 
   case 48:
 /* Line 1787 of yacc.c  */
-#line 350 "Cmenos.y"
+#line 330 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = DIF;
@@ -1940,7 +1920,7 @@ yyreduce:
 
   case 49:
 /* Line 1787 of yacc.c  */
-#line 357 "Cmenos.y"
+#line 337 "Cmenos.y"
     {
                     (yyval) = (yyvsp[(2) - (3)]);
                     (yyval)->child[0] = (yyvsp[(1) - (3)]);
@@ -1950,13 +1930,13 @@ yyreduce:
 
   case 50:
 /* Line 1787 of yacc.c  */
-#line 363 "Cmenos.y"
+#line 343 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 51:
 /* Line 1787 of yacc.c  */
-#line 366 "Cmenos.y"
+#line 346 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = SOM;                            
@@ -1965,7 +1945,7 @@ yyreduce:
 
   case 52:
 /* Line 1787 of yacc.c  */
-#line 371 "Cmenos.y"
+#line 351 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = SUB;                            
@@ -1974,7 +1954,7 @@ yyreduce:
 
   case 53:
 /* Line 1787 of yacc.c  */
-#line 378 "Cmenos.y"
+#line 358 "Cmenos.y"
     {
                     (yyval) = (yyvsp[(2) - (3)]);
                     (yyval)->child[0] = (yyvsp[(1) - (3)]);
@@ -1984,13 +1964,13 @@ yyreduce:
 
   case 54:
 /* Line 1787 of yacc.c  */
-#line 384 "Cmenos.y"
+#line 364 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 55:
 /* Line 1787 of yacc.c  */
-#line 387 "Cmenos.y"
+#line 367 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = MUL;                            
@@ -1999,7 +1979,7 @@ yyreduce:
 
   case 56:
 /* Line 1787 of yacc.c  */
-#line 392 "Cmenos.y"
+#line 372 "Cmenos.y"
     {
                     (yyval) = newExpNode(operationK);
                     (yyval)->attr.op = DIV;                            
@@ -2008,48 +1988,43 @@ yyreduce:
 
   case 57:
 /* Line 1787 of yacc.c  */
-#line 398 "Cmenos.y"
+#line 378 "Cmenos.y"
     { (yyval) = (yyvsp[(2) - (3)]); }
     break;
 
   case 58:
 /* Line 1787 of yacc.c  */
-#line 400 "Cmenos.y"
+#line 380 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 59:
 /* Line 1787 of yacc.c  */
-#line 402 "Cmenos.y"
+#line 382 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 60:
 /* Line 1787 of yacc.c  */
-#line 404 "Cmenos.y"
+#line 384 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 61:
 /* Line 1787 of yacc.c  */
-#line 407 "Cmenos.y"
+#line 387 "Cmenos.y"
     {
                     (yyval) = newExpNode(activationK);
                     (yyval)->attr.name = (yyvsp[(1) - (4)])->attr.name;
                     (yyval)->lineno = (yyvsp[(1) - (4)])->lineno;
                     (yyval)->child[0] = (yyvsp[(3) - (4)]);
-                    
-                    
-                    /*$$ = $1;
-                    $$->child[0] = $3;
-                    $$->nodekind = statementK;
-                    $$->kind.stmt = callK;*/
+                
                 }
     break;
 
   case 62:
 /* Line 1787 of yacc.c  */
-#line 425 "Cmenos.y"
+#line 397 "Cmenos.y"
     {
                     YYSTYPE t = (yyvsp[(1) - (3)]);
                     if(t != NULL)
@@ -2066,13 +2041,13 @@ yyreduce:
 
   case 63:
 /* Line 1787 of yacc.c  */
-#line 438 "Cmenos.y"
+#line 410 "Cmenos.y"
     { (yyval) = (yyvsp[(1) - (1)]); }
     break;
 
   case 65:
 /* Line 1787 of yacc.c  */
-#line 442 "Cmenos.y"
+#line 414 "Cmenos.y"
     {		
 	 (yyval) = NULL;
 }
@@ -2080,7 +2055,7 @@ yyreduce:
 
   case 66:
 /* Line 1787 of yacc.c  */
-#line 446 "Cmenos.y"
+#line 418 "Cmenos.y"
     {
                     (yyval) = newExpNode(idK);
                     (yyval)->attr.name = copyString(tokenString);
@@ -2089,7 +2064,7 @@ yyreduce:
 
   case 67:
 /* Line 1787 of yacc.c  */
-#line 452 "Cmenos.y"
+#line 424 "Cmenos.y"
     {
                     (yyval) = newExpNode(constantK);
                     (yyval)->attr.val = atoi(tokenString);
@@ -2099,7 +2074,7 @@ yyreduce:
 
 
 /* Line 1787 of yacc.c  */
-#line 2103 "Cmenos.tab.c"
+#line 2078 "Cmenos.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2331,7 +2306,7 @@ yyreturn:
 
 
 /* Line 2050 of yacc.c  */
-#line 459 "Cmenos.y"
+#line 431 "Cmenos.y"
 
 
 int yyerror(char* message){

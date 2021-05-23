@@ -1,8 +1,6 @@
 /****************************************************/
-/* File: parse.h                                    */
-/* The parser interface for the TINY compiler       */
-/* Compiler Construction: Principles and Practice   */
-/* Daiana Santos e Isadora Muniz                    */
+/*                   Parser                         */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #ifndef _PARSE_H_

@@ -1,7 +1,7 @@
 /****************************************************/
-/* 					            */
-/* Analisador Sintatico                             */
-/* Daiana Santos e Isadora Muniz                    */
+/* 					                                */
+/*               Analisador Sintatico               */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 %{
@@ -62,7 +62,6 @@ varDeclaracao:	INT identificador PEV
                 $$->type = integerK;
                 $$->size = 1;
                 $$->child[0] = $2;
-                //$2->nodekind = statementK;
                 $2->kind.stmt = variableK;
                 $2->type = INTTYPE;
                 }
@@ -110,10 +109,6 @@ funDeclaracao:		INT identificador APR params FPR compostodecl
 			            $2->nodekind = expressionK;
                        	$2->kind.exp = functionK;
 
-							/*$2->type = $1->type;
-							$4->type = $1->type;
-							aggScope($2->child[0], $2->attr.name);
-							aggScope($2->child[1], $2->attr.name);*/
                  }
 		| VOID identificador APR params FPR compostodecl
 		{
@@ -159,14 +154,7 @@ param:	    TipoEspecificador identificador
 			    $$ = $1;
                 $$->child[0] = $2;
                 $$->child[0]->kind.exp = paramK;
-                
-                
-                /*$$ = newExpNode(typeK);
-                $2->nodekind = statementK;
-                $2->kind.stmt = variableK;
-                $$->type = integerK;
-			    $2->type = INTTYPE;
-                $$->child[0] = $2;*/
+ 
 
                           
             } 
@@ -177,13 +165,6 @@ param:	    TipoEspecificador identificador
                 $$->child[0] = $2;
                 $$->child[0]->kind.exp = paramK;
 
-
-			   /* $$ = newExpNode(typeK);
-                $2->nodekind = statementK;
-                $2->kind.stmt = variableK;
-                $$->type = integerK;
-				$2->type = INTTYPE;
-                $$->child[0] = $2;*/
             } 
 	;	
 compostodecl:		ACH localdeclaracoes statementlista FCH
@@ -277,7 +258,6 @@ iteracaodecl:		WHILE APR expressao FPR statement
 retornodecl :		RETURN PEV
                    {
                             $$ = newStmtNode(returnK);
-							//$$->type = voidK;
                    } 
 	| 	 		RETURN expressao PEV
                    {
@@ -409,20 +389,12 @@ ativacao : 		identificador APR arglista FPR
                     $$->attr.name = $1->attr.name;
                     $$->lineno = $1->lineno;
                     $$->child[0] = $3;
-                    
-                    
-                    /*$$ = $1;
-                    $$->child[0] = $3;
-                    $$->nodekind = statementK;
-                    $$->kind.stmt = callK;*/
+                
                 }
 	;
 
-args  :  arglista  { $$ = $1; }
-      |  { $$ = NULL;}
-
 arglista : 		arglista VIR expressao
-                {
+              {
                     YYSTYPE t = $1;
                     if(t != NULL)
                     {

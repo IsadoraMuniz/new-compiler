@@ -1,7 +1,7 @@
 /****************************************************/
-/* 					                                */
-/* File: globals.h                                  */
-/* Daiana Santos e Isadora Muniz                    */
+/* 					                                        */
+/*               Variaveis Globais                  */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 
@@ -16,7 +16,6 @@
 
 
 #ifndef YYPARSER
-
 
 #include "Cmenos.tab.h"
 
@@ -67,7 +66,6 @@ typedef enum {INTTYPE, VOIDTYPE, BOOLTYPE} dataTypes;
 
 typedef enum {VAR, FUN} IDTypes;
 
-/* ExpType is used for type checking */
 typedef enum
 {
 	voidK, integerK, booleanK
@@ -97,11 +95,10 @@ typedef struct treeNode
      { 
 	    TokenType op;
         int val;
-      //   int len;
         char* name; 
-      //   char* scope;	
+      
      } attr;
-     dataTypes type; /* for type checking of exps */
+     dataTypes type; 
 } TreeNode;
 
 

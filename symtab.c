@@ -1,7 +1,6 @@
 /****************************************************/
-/* 					                                */
-/* Tabela de Simbolos                               */
-/* Daiana Santos e Isadora Muniz                    */
+/*               Tabela de Simbolos                 */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #include <stdio.h>
@@ -9,14 +8,11 @@
 #include <string.h>
 #include "symtab.h"
 
-/* SIZE is the size of the hash table */
+
 #define SIZE 211
 
-/* SHIFT is the power of two used as multiplier
-   in hash function  */
 #define SHIFT 4
 
-/* the hash function */
 int hash (char* name)
 { 
     int temp = 0;
@@ -41,7 +37,7 @@ void st_insert(char * name, int lineno, int op, char* escopo, dataTypes DType, I
         l = l->next;
     } 
       
-    if (l == NULL || (op != 0 && l->escopo != escopo && l->IType != FUN)) /* variable not yet in table */
+    if (l == NULL || (op != 0 && l->escopo != escopo && l->IType != FUN)) 
     { 
         l = (BucketList) malloc(sizeof(struct BucketListRec));
         l->name = name;
@@ -65,7 +61,7 @@ void st_insert(char * name, int lineno, int op, char* escopo, dataTypes DType, I
     Error = TRUE;
   }
   else if(l->escopo != escopo && (strcmp(l->escopo,"global") != 0) ){
-    //procura por variavel global entes de supor que não existe
+    
     while ((l != NULL)){
       if((strcmp(l->escopo, "global")==0)&& ((strcmp( name,l->name) == 0))){
         LineList t = l->lines;
@@ -92,9 +88,6 @@ void st_insert(char * name, int lineno, int op, char* escopo, dataTypes DType, I
   }
 } 
 
-/* Function st_lookup returns the memory 
- * location of a variable or -1 if not found
- */
 int st_lookup (char* name)
 { 
   int h = hash(name);	
@@ -106,7 +99,6 @@ int st_lookup (char* name)
   else 
       return l->memloc;
 }
-
 
 void busca_main ()
 {
@@ -130,11 +122,6 @@ dataTypes getFunType(char* nome){
   else return l->Dtype;
 }
 
-
-/* Procedure printSymTab prints a formatted 
- * listing of the symbol table contents 
- * to the listing file
- */
 void printSymTab(FILE * listing)
 { int i;
   fprintf(listing," Nome      Escopo      TipoID        TipoDado     Linha Numeros\n");
@@ -144,7 +131,6 @@ void printSymTab(FILE * listing)
     { BucketList l = hashTable[i];
       while (l != NULL)
       { LineList t = l->lines;
-        //fprintf(listing,"%-8d ",l->memloc);
         fprintf(listing,"%-10s  ",l->name);
 		    fprintf(listing,"%-12s  ",l->escopo);
 
@@ -173,4 +159,4 @@ void printSymTab(FILE * listing)
       }
     }
   }
-} /* imprimeTabelaSimbolos */
+} 

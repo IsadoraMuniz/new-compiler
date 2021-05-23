@@ -1,18 +1,12 @@
 /****************************************************/
-/* File: util.c                                     */
-/* Utility function implementation                  */
-/* for the TINY compiler                            */
-/* Compiler Construction: Principles and Practice   */
-/* Daiana Santos e Isadora Muniz                    */
+/* 					                                        */
+/*                Arvore Sintatica                  */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #include "globals.h"
 #include "util.h"
 
-
-/* Procedure printToken prints a token 
- * and its lexeme to the listing file
- */
 void printToken( TokenType token, const char* tokenString )
 { 
   switch (token)
@@ -23,25 +17,25 @@ void printToken( TokenType token, const char* tokenString )
     case RETURN: fprintf(listing, "Palavra Reservada: %s\n",tokenString); break;
     case VOID: fprintf(listing, "Palavra Reservada: %s\n",tokenString); break;
     case WHILE: fprintf(listing, "Palavra Reservada: %s\n",tokenString); break;
-    case IGL: fprintf(listing,"Simbolo: =\n"); break;
-    case MEN: fprintf(listing,"Simbolo: <\n"); break;
-    case IGLIGL: fprintf(listing,"Simbolo: ==\n"); break;
-    case MAI: fprintf(listing,"Simbolo: >\n"); break; 
-    case MEIGL: fprintf(listing, "Simbolo: <=\n"); break;
-    case MAIGL: fprintf(listing, "Simbolo: >=\n"); break; 
-    case DIF: fprintf(listing, "Simbolo: !=\n"); break;
-    case ACO: fprintf(listing, "Simbolo: [\n"); break;
-    case FCO: fprintf(listing, "Simbolo: ]\n"); break;
-    case ACH: fprintf(listing, "Simbolo: {\n"); break;
-    case FCH: fprintf(listing, "Simbolo: }\n"); break;	
-    case APR: fprintf(listing,"Simbolo: (\n"); break;
-    case FPR: fprintf(listing,"Simbolo: )\n"); break;
-    case PEV: fprintf(listing,"Simbolo: ;\n"); break;
-    case VIR: fprintf(listing,"Simbolo: ,\n"); break;
-    case SOM: fprintf(listing,"Simbolo: +\n"); break;
-    case SUB: fprintf(listing,"Simbolo: -\n"); break;
-    case MUL: fprintf(listing,"Simbolo: *\n"); break;
-    case DIV: fprintf(listing,"Simbolo: /\n"); break;
+    case IGL: fprintf(listing,"=\n"); break;
+    case MEN: fprintf(listing,"<\n"); break;
+    case IGLIGL: fprintf(listing,"==\n"); break;
+    case MAI: fprintf(listing,">\n"); break; 
+    case MEIGL: fprintf(listing, "<=\n"); break;
+    case MAIGL: fprintf(listing, ">=\n"); break; 
+    case DIF: fprintf(listing, "!=\n"); break;
+    case ACO: fprintf(listing, "[\n"); break;
+    case FCO: fprintf(listing, "]\n"); break;
+    case ACH: fprintf(listing, "{\n"); break;
+    case FCH: fprintf(listing, "}\n"); break;	
+    case APR: fprintf(listing,"(\n"); break;
+    case FPR: fprintf(listing,")\n"); break;
+    case PEV: fprintf(listing,";\n"); break;
+    case VIR: fprintf(listing,",\n"); break;
+    case SOM: fprintf(listing,"+\n"); break;
+    case SUB: fprintf(listing,"-\n"); break;
+    case MUL: fprintf(listing,"*\n"); break;
+    case DIV: fprintf(listing,"/\n"); break;
     case ENDFILE: fprintf(listing,"EOF\n"); break; 
     case NUM:
       fprintf(listing, "Numero: %s\n",tokenString);
@@ -57,25 +51,6 @@ void printToken( TokenType token, const char* tokenString )
   }
 }
 
-// void aggScope(TreeNode* t, char* scope)
-// {
-// 	int i;
-// 	while(t != NULL)
-// 	{
-// 		for(i = 0; i < MAXCHILDREN; ++i)
-// 		{
-// 			t->attr.scope = scope;
-// 			aggScope(t->child[i], scope);
-// 		}
-// 		t = t->sibling; 
-// 	}
-// }
-
-
-/* Function newStmtNode creates a new statement
- * node for syntax tree construction
- */
-
 TreeNode * newStmtNode(StatementKind kind)
 { 
     TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
@@ -90,14 +65,9 @@ TreeNode * newStmtNode(StatementKind kind)
         t->nodekind = statementK;
         t->kind.stmt = kind;
         t->lineno = lineno;
-        // t->attr.scope = "global";
     }
     return t;
 }
-
-/* Function newExpNode creates a new expression 
- * node for syntax tree construction
- */
 
 TreeNode * newExpNode(ExpressionIdentifier kind)
 { 
@@ -114,14 +84,9 @@ TreeNode * newExpNode(ExpressionIdentifier kind)
         t->kind.exp = kind;
         t->lineno = lineno;
         t->type = VOID;
-        // t->attr.scope = "global";
     }
     return t;
 }
-
-/* Function copyString allocates and makes a new
- * copy of an existing string
- */
 
 char * copyString(char * s)
 { 
@@ -138,17 +103,12 @@ char * copyString(char * s)
     return t;
 }
 
-/* Variable indentno is used by printTree to
- * store current number of spaces to indent
- */
-
 static int indentno = 0;
 
-/* macros to increase/decrease indentation */
+
 #define INDENT indentno+=2
 #define UNINDENT indentno-=2
 
-/* printSpaces indents by printing spaces */
 static void printSpaces(void)
 { 
   int i;
@@ -156,9 +116,6 @@ static void printSpaces(void)
       fprintf(listing," ");
 }
 
-/* procedure printTree prints a syntax tree to the 
- * listing file using indentation to indicate subtrees
- */
 void printTree( TreeNode * tree )
 { int i;
   INDENT;
