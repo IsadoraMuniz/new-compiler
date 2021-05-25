@@ -1,5 +1,6 @@
 int gdc (int u, int v)
 {
+   int u;
    if (v == 0) return u;
    else return gdc(v,u-u/v*v);
 
