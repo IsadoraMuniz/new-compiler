@@ -27,9 +27,9 @@ void				return VOID;
 {COINI}({LETRA}|{DIGITO}|{OUTRO})*({COFI})* {}
 {DIGITO}+		return NUM;
 "+"				return SOM;
-"-"				return SUB;
+"-"				return SUBT;
 "*"				return MUL;
-"/"				return DIV;
+"/"				return DIVI;
 "<"				return MEN;
 ">"				return MAI;
 "="				return IGL;

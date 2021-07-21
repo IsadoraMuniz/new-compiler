@@ -6,19 +6,19 @@
 #ifndef _CGEN_H_
 #define _CGEN_H_
 
-
-void code_gen(TreeNode * tree);
+void gen_quad(TreeNode * tree);
 
 void percorre(TreeNode * t);
 
-typedef enum {geral, id, Const, regTemp, labelk} typeQuad;
+typedef enum {geral, id, Const, regTemp, labelk, funck} quadKind;
 
 typedef struct nodeQuad {
 
-    typeQuad type;
+    quadKind type;
     char* name;
     int regTemp;
     int value;
+    int endereco;
 
  
 }quadNode;
@@ -28,17 +28,19 @@ typedef enum {
 	nop,
 	halt,
 	store,
-	vet,
 	fun,
 	arg,
 	setArg, 
 	call,
+    pop,
+    vet,
+    push,
     load,
     alloc,
-    push, 
-    pop,
+    ret, 
     label,
     beq,
+    bne,
     jump,
     imed,
 	end
@@ -63,6 +65,8 @@ typedef struct {
 
 } lista;
 
+//Variavel que contem a lista encadeada de quadruplas
 lista *lista_quad;
 
 #endif
+

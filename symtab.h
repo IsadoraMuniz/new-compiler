@@ -34,6 +34,8 @@ int hash ( char * key );
 
 int st_lookup (char * name);
 
+int busca_end ( char * name, char * fun);
+
 void printSymTab(FILE * listing);
 
 void busca_main ();

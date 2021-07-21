@@ -100,6 +100,16 @@ int st_lookup (char* name)
       return l->memloc;
 }
 
+int busca_end ( char * name, char * fun)
+{
+  int h = hash(name);
+  BucketList l =  hashTable[h];
+  while ((l != NULL) && (strcmp(name,l->name) != 0) && (strcmp(fun,l->escopo) != 0))
+    l = l->next;
+  if (l == NULL) return -1;
+  else return l->memloc;
+}
+
 void busca_main ()
 {
   int h = hash("main");

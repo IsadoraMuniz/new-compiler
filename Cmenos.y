@@ -22,8 +22,8 @@
 %token IF ELSE WHILE INT VOID RETURN
 %token NUM ID
 %token IGL IGLIGL DIF MEN MAI MEIGL MAIGL 
-%token SOM SUB
-%token MUL DIV
+%token SOM SUBT
+%token MUL DIVI
 %token APR FPR ACO FCO VIR ACH FCH PEV 
 %token ERR ENDFILE 
 %expect 1 
@@ -347,10 +347,10 @@ soma:			SOM
                     $$ = newExpNode(operationK);
                     $$->attr.op = SOM;                            
                 } 
-	| 			SUB
+	| 			SUBT
 				{
                     $$ = newExpNode(operationK);
-                    $$->attr.op = SUB;                            
+                    $$->attr.op = SUBT;                            
                 }
 	;
 
@@ -368,10 +368,10 @@ mult:			MUL
                     $$ = newExpNode(operationK);
                     $$->attr.op = MUL;                            
                 }
-	|			DIV
+	|			DIVI
  				{
                     $$ = newExpNode(operationK);
-                    $$->attr.op = DIV;                            
+                    $$->attr.op = DIVI;                            
                 }
 	;
 fator:			APR expressao FPR

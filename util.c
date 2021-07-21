@@ -33,9 +33,9 @@ void printToken( TokenType token, const char* tokenString )
     case PEV: fprintf(listing,";\n"); break;
     case VIR: fprintf(listing,",\n"); break;
     case SOM: fprintf(listing,"+\n"); break;
-    case SUB: fprintf(listing,"-\n"); break;
+    case SUBT: fprintf(listing,"-\n"); break;
     case MUL: fprintf(listing,"*\n"); break;
-    case DIV: fprintf(listing,"/\n"); break;
+    case DIVI: fprintf(listing,"/\n"); break;
     case ENDFILE: fprintf(listing,"EOF\n"); break; 
     case NUM:
       fprintf(listing, "Numero: %s\n",tokenString);
