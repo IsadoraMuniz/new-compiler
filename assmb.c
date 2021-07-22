@@ -1,11 +1,6 @@
 /****************************************************/
-/*                                                  */
-/*         Compilador para a linguagem c-           */
-/*                                                  */
-/*    Nomes: Thiago Mira de Oliveira    RA:123138   */
-/*                                                  */
-/*    Arquivo: assmb.c                              */
-/*                                                  */
+/*              Gerador de codigo assembly          */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #include "globals.h"
@@ -141,6 +136,7 @@ void percorre_lista (void){
 
 
 	while(aux != NULL){
+    //printf("%d\n", aux->instrucao);
 
 		switch (aux->instrucao){
       		case nop:

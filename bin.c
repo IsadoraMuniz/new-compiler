@@ -1,11 +1,6 @@
 /****************************************************/
-/*                                                  */
-/*         Compilador para a linguagem c-           */
-/*                                                  */
-/*    Nomes: Thiago Mira de Oliveira    RA:123138   */
-/*                                                  */
-/*    Arquivo: bin.c                              */
-/*                                                  */
+/*              Gerador de codigo binario           */
+/*                 Isadora Muniz                    */
 /****************************************************/
 
 #include "globals.h"

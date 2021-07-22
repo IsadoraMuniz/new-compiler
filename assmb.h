@@ -1,5 +1,10 @@
+/****************************************************/
+/*            Lib Gerador de codigo assembly        */
+/*                 Isadora Muniz                    */
+/****************************************************/
 #ifndef _ASSMB_H_
 #define _ASSMB_H_
+
 #include "cgen.h"
 
 

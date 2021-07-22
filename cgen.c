@@ -64,12 +64,9 @@ void imprime(quadrupla *quadrupla_aux) {
             case setArg:    aux = "setArg";break;
             case call:      aux = "call";break;
             case end:       aux = "end";break;
-            case vet:       aux = "vet";break;
             case load:      aux = "load";break;
             case alloc:     aux = "alloc";break;
             case ret:      aux = "ret";break;
-            case push:      aux = "push";break;
-            case pop:       aux = "pop";break;
             case label:     aux = "label";break;
             case IGLIGL:        aux = "==";break;
             case DIF:       aux = "!=";break;
@@ -283,7 +280,7 @@ int make_quad(TreeNode * tree) {
                 endr = busca_end(tree->attr.name, escopoAux);
                 if(tree->child[0] != NULL){
                     direita = make_quad(tree->child[0]);
-                    insere(vet, "", tree->attr.name, "");
+                    insere(load, "", tree->attr.name, "");
                     lista_quad->ultimo->op3.type = regTemp;
                     lista_quad->ultimo->op3.value = direita;
 
