@@ -13,32 +13,32 @@
 #include <string.h>
 #include <stdbool.h>
 
-//Insere uma nova instrucao na lista
-void insere_ASSMB(OPCODE opcode) {
+//insert a new assembly instruction to the list
+void insert_assembly_code(OPCODE opcode) {
 
-    INSTRU *novo;
-    novo=(INSTRU*)malloc(sizeof(INSTRU));
+    instruction_cell *novo;
+    novo=(instruction_cell*)malloc(sizeof(instruction_cell));
     
     novo->proximo= NULL;
     novo->opcode = opcode;
 
-    if(listaAsmb->tamanho==0) {
+    if(assembly_list->tamanho==0) {
 
-        listaAsmb->primeiro=novo;
+        assembly_list->primeiro=novo;
 
     } else {
 
-        listaAsmb->ultimo->proximo=novo;
+        assembly_list->ultimo->proximo=novo;
 
     }
 
-    listaAsmb->ultimo=novo;
-    listaAsmb->tamanho++;
+    assembly_list->ultimo=novo;
+    assembly_list->tamanho++;
 
 }
 
 //Funcao que imprime a lista de instrucoes assembly
-void imprime_ASSMB(INSTRU *Noaux){
+void print_assembly_code(instruction_cell *Noaux){
 
     char *aux;
     bool label_flag = true;
@@ -125,8 +125,7 @@ void imprime_ASSMB(INSTRU *Noaux){
     }
 }
 
-//Funcao que percorre lista de quadruplas e 
-//insere na lista de instrucoes assembly
+
 void percorre_lista (void){
 
 	quadruple *aux = lista_quad->primeiro;
@@ -136,86 +135,85 @@ void percorre_lista (void){
 
 
 	while(aux != NULL){
-    //printf("%d\n", aux->instrucao);
 
 		switch (aux->instruction_name){
       		case nop:
-                insere_ASSMB(NOP);
+                insert_assembly_code(NOP);
       			break;
                   
             case halt:
-                insere_ASSMB(HALT);
+                insert_assembly_code(HALT);
                 break;
 
             case store:
 
-                insere_ASSMB(LI);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = 27;
+                insert_assembly_code(LI);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = 27;
 
-                listaAsmb->ultimo->op2.type = Const;
-                listaAsmb->ultimo->op2.value = aux->op1.adress;
+                assembly_list->ultimo->op2.type = Const;
+                assembly_list->ultimo->op2.value = aux->op1.adress;
 
                 if(aux->op2.type == regTemp){
 
-                    insere_ASSMB(ADD);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = 27;
+                    insert_assembly_code(ADD);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = 27;
 
-                    listaAsmb->ultimo->op2.type = regTemp;
-                    listaAsmb->ultimo->op2.value = 27;
+                    assembly_list->ultimo->op2.type = regTemp;
+                    assembly_list->ultimo->op2.value = 27;
 
-                    listaAsmb->ultimo->op3.type = regTemp;
-                    listaAsmb->ultimo->op3.value = aux->op2.value;
+                    assembly_list->ultimo->op3.type = regTemp;
+                    assembly_list->ultimo->op3.value = aux->op2.value;
 
                 }
 
-                insere_ASSMB(SW);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = 27;
+                insert_assembly_code(SW);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = 27;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op3.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op3.value;
 
 
                 break;
 
             case load:
-                insere_ASSMB(LI);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = 27;
+                insert_assembly_code(LI);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = 27;
 
-                listaAsmb->ultimo->op2.type = Const;
-                listaAsmb->ultimo->op2.value = aux->op2.adress;
+                assembly_list->ultimo->op2.type = Const;
+                assembly_list->ultimo->op2.value = aux->op2.adress;
 
                 if(aux->op3.type == regTemp){
 
-                    insere_ASSMB(ADD);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = 27;
+                    insert_assembly_code(ADD);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = 27;
 
-                    listaAsmb->ultimo->op2.type = regTemp;
-                    listaAsmb->ultimo->op2.value = 27;
+                    assembly_list->ultimo->op2.type = regTemp;
+                    assembly_list->ultimo->op2.value = 27;
 
-                    listaAsmb->ultimo->op3.type = regTemp;
-                    listaAsmb->ultimo->op3.value = aux->op3.value;
+                    assembly_list->ultimo->op3.type = regTemp;
+                    assembly_list->ultimo->op3.value = aux->op3.value;
 
                 }
 
-                insere_ASSMB(LW);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                insert_assembly_code(LW);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = 27;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = 27;
                 break;
 
 
             case fun: 
-                insere_ASSMB(LABEL);
-                listaAsmb->ultimo->op1.type = funck;
-                listaAsmb->ultimo->op1.name = aux->op1.name;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                insert_assembly_code(LABEL);
+                assembly_list->ultimo->op1.type = funck;
+                assembly_list->ultimo->op1.name = aux->op1.name;
+                assembly_list->ultimo->op1.value = aux->op1.value;
                 break;
 
             case arg:
@@ -223,12 +221,12 @@ void percorre_lista (void){
 
                 while(i<=argmt){
                     
-                    insere_ASSMB(SW);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = i;
+                    insert_assembly_code(SW);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = i;
 
-                    listaAsmb->ultimo->op2.type = regTemp;
-                    listaAsmb->ultimo->op2.value = aux->op3.value;
+                    assembly_list->ultimo->op2.type = regTemp;
+                    assembly_list->ultimo->op2.value = aux->op3.value;
 
                     i++;
                 } 
@@ -241,12 +239,12 @@ void percorre_lista (void){
                 
                 argmt++;
 
-                insere_ASSMB(MOVE);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = argmt;
+                insert_assembly_code(MOVE);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = argmt;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op3.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op3.value;
 
                 break;
 
@@ -254,33 +252,33 @@ void percorre_lista (void){
                 if(strcmp(aux->op3.name, "output") == 0){
 
 
-                    insere_ASSMB(OUT);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = 22;
+                    insert_assembly_code(OUT);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = 22;
 
 
                 }else if(strcmp(aux->op3.name, "input") == 0){
                     
-                    insere_ASSMB(IN);
+                    insert_assembly_code(IN);
                     
 
-                    insere_ASSMB(MOVE);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = aux->op1.value;
-                    listaAsmb->ultimo->op2.type = regTemp;
-                    listaAsmb->ultimo->op2.value = 30;
+                    insert_assembly_code(MOVE);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = aux->op1.value;
+                    assembly_list->ultimo->op2.type = regTemp;
+                    assembly_list->ultimo->op2.value = 30;
                 }
                 else{
-                    insere_ASSMB(JAL);
-                    listaAsmb->ultimo->op2.type = funck;
-                    listaAsmb->ultimo->op2.name = aux->op3.name;
-                    listaAsmb->ultimo->op1.value = aux->op1.value;
+                    insert_assembly_code(JAL);
+                    assembly_list->ultimo->op2.type = funck;
+                    assembly_list->ultimo->op2.name = aux->op3.name;
+                    assembly_list->ultimo->op1.value = aux->op1.value;
                     if(aux->op1.type == regTemp){
-                        insere_ASSMB(MOVE);
-                        listaAsmb->ultimo->op1.type = regTemp;
-                        listaAsmb->ultimo->op1.value = aux->op1.value;
-                        listaAsmb->ultimo->op2.type = regTemp;
-                        listaAsmb->ultimo->op2.value = 28;
+                        insert_assembly_code(MOVE);
+                        assembly_list->ultimo->op1.type = regTemp;
+                        assembly_list->ultimo->op1.value = aux->op1.value;
+                        assembly_list->ultimo->op2.type = regTemp;
+                        assembly_list->ultimo->op2.value = 28;
                     }
                 }
                 break;
@@ -288,9 +286,9 @@ void percorre_lista (void){
             case end: 
 
                 if(strcmp(aux->op1.name, "main") != 0){
-                    insere_ASSMB(JR);
-                    listaAsmb->ultimo->op1.type = regTemp;
-                    listaAsmb->ultimo->op1.value = 31;  
+                    insert_assembly_code(JR);
+                    assembly_list->ultimo->op1.type = regTemp;
+                    assembly_list->ultimo->op1.value = 31;  
 
                 } 
                  
@@ -306,200 +304,200 @@ void percorre_lista (void){
 
             case ret: 
 
-                insere_ASSMB(MOVE);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = 28;
+                insert_assembly_code(MOVE);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = 28;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op1.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op1.value;
 
-                insere_ASSMB(JR);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = 31;
+                insert_assembly_code(JR);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = 31;
 
                 break;
 
             case label: 
                 
-                insere_ASSMB(LABEL);
-                listaAsmb->ultimo->op1.type = labelk;
-                listaAsmb->ultimo->op1.value = aux->op3.value;
+                insert_assembly_code(LABEL);
+                assembly_list->ultimo->op1.type = labelk;
+                assembly_list->ultimo->op1.value = aux->op3.value;
                 break;
 
             case IGLIGL:    
-                insere_ASSMB(SET);
+                insert_assembly_code(SET);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;   
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;   
                 break;
 
 
             case DIF:     
-                insere_ASSMB(SDT);
+                insert_assembly_code(SDT);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                 break;
 
             case MEN:     
-                insere_ASSMB(SLT);
+                insert_assembly_code(SLT);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                 break;
 
             case MAI:     
-                insere_ASSMB(SGT);
+                insert_assembly_code(SGT);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                 break;
 
             case MAIGL:     
-                insere_ASSMB(SGE);
+                insert_assembly_code(SGE);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                 break;
 
             case MEIGL:     
-                insere_ASSMB(SLE);
+                insert_assembly_code(SLE);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                 break;
 
 
             case SOM:    
-                insere_ASSMB(ADD);
+                insert_assembly_code(ADD);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;
 
                 break;
 
             case SUBT:   
-                insere_ASSMB(SUB);
+                insert_assembly_code(SUB);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value; 
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value; 
                 
                 break;
 
             case MUL:  
-                insere_ASSMB(MULT);
+                insert_assembly_code(MULT);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value; 
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value; 
                   
                 break;
 
             case DIVI:  
-                insere_ASSMB(DIV);
+                insert_assembly_code(DIV);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = regTemp;
-                listaAsmb->ultimo->op3.value = aux->op3.value;  
+                assembly_list->ultimo->op3.type = regTemp;
+                assembly_list->ultimo->op3.value = aux->op3.value;  
                  
                 break;
 
             case imed:    
-                insere_ASSMB(LI);
+                insert_assembly_code(LI);
 
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op3.type = Const;
-                listaAsmb->ultimo->op3.value = aux->op3.value;
+                assembly_list->ultimo->op3.type = Const;
+                assembly_list->ultimo->op3.value = aux->op3.value;
                 break;
 
             case jump:   
-                insere_ASSMB(JUMP);
-                listaAsmb->ultimo->op1.type = labelk;
-                listaAsmb->ultimo->op1.value = aux->op3.value;
+                insert_assembly_code(JUMP);
+                assembly_list->ultimo->op1.type = labelk;
+                assembly_list->ultimo->op1.value = aux->op3.value;
                 break;
 
             case beq:    
-                insere_ASSMB(BEQ);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                insert_assembly_code(BEQ);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = labelk;
-                listaAsmb->ultimo->op3.value = aux->op3.value;
+                assembly_list->ultimo->op3.type = labelk;
+                assembly_list->ultimo->op3.value = aux->op3.value;
                 break;
 
             case bne:    
-                insere_ASSMB(BNE);
-                listaAsmb->ultimo->op1.type = regTemp;
-                listaAsmb->ultimo->op1.value = aux->op1.value;
+                insert_assembly_code(BNE);
+                assembly_list->ultimo->op1.type = regTemp;
+                assembly_list->ultimo->op1.value = aux->op1.value;
 
-                listaAsmb->ultimo->op2.type = regTemp;
-                listaAsmb->ultimo->op2.value = aux->op2.value;
+                assembly_list->ultimo->op2.type = regTemp;
+                assembly_list->ultimo->op2.value = aux->op2.value;
 
-                listaAsmb->ultimo->op3.type = labelk;
-                listaAsmb->ultimo->op3.value = aux->op3.value;
+                assembly_list->ultimo->op3.type = labelk;
+                assembly_list->ultimo->op3.value = aux->op3.value;
                 break;
 
             default:
@@ -519,17 +517,17 @@ void percorre_lista (void){
 void assmb_gen(void){
 
     
-    listaAsmb = (lista_ASSMB*)malloc(sizeof(lista_ASSMB));
+    assembly_list = (TList_assembly*)malloc(sizeof(TList_assembly));
 
-    listaAsmb->primeiro = NULL;
-    listaAsmb->ultimo = NULL;
-    listaAsmb->tamanho = 0;
+    assembly_list->primeiro = NULL;
+    assembly_list->ultimo = NULL;
+    assembly_list->tamanho = 0;
 
 	percorre_lista();
 
-	imprime_ASSMB(listaAsmb->primeiro);
+	print_assembly_code(assembly_list->primeiro);
 
-    make_bin(listaAsmb->primeiro);
+    make_bin(assembly_list->primeiro);
 }
 
 

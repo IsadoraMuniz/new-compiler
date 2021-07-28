@@ -58,16 +58,16 @@ struct t_assmb {
     struct t_assmb *proximo;
 };
 
-typedef struct t_assmb INSTRU;
+typedef struct t_assmb instruction_cell;
 
 typedef struct {
-    INSTRU *primeiro;
-    INSTRU *ultimo;
+    instruction_cell *primeiro;
+    instruction_cell *ultimo;
     int tamanho;
 
-} lista_ASSMB;
+} TList_assembly;
 
 //Variavel que contem a lista encadeada de quadruplas
-lista_ASSMB *listaAsmb;
+TList_assembly *assembly_list;
 
 #endif

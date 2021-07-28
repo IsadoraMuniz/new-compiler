@@ -12,7 +12,7 @@
 
 #define MAX 10000
 
-void make_bin(INSTRU *aux){
+void make_bin(instruction_cell *aux){
 
 	int PC = 0;
 

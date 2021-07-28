@@ -6,6 +6,6 @@
 #ifndef _BIN_H_
 #define _BIN_H_
 
-void make_bin(INSTRU *aux);
+void make_bin(instruction_cell *aux);
 
 #endif
