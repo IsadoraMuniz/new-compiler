@@ -9,7 +9,7 @@
 
 
 //funcao que cria as quadruplas
-void assmb_gen(void);
+void generate_assembly(void);
 
 typedef struct nodeassmb {
 

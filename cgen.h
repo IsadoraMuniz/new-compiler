@@ -6,16 +6,16 @@
 #ifndef _CGEN_H_
 #define _CGEN_H_
 
-void code_gen(TreeNode * tree);
+void generate_intermediate_code(TreeNode * tree);
 
-void percorre(TreeNode * t);
+void traverse(TreeNode * t);
 
-typedef enum {geral, id, Const, regTemp, labelk, funck} quadKind;
+typedef enum {general, id, constant, regTemporary, labelk, funck} quadKind;
 
 typedef struct nodeQuad {
     quadKind type;
     char* name;
-    int regTemp;
+    int regTemporary;
     int value;
     int adress;
 
