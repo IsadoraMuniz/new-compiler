@@ -129,7 +129,7 @@ void imprime_ASSMB(INSTRU *Noaux){
 //insere na lista de instrucoes assembly
 void percorre_lista (void){
 
-	quadrupla *aux = lista_quad->primeiro;
+	quadruple *aux = lista_quad->primeiro;
 
     int argmt = 21;
     int i;
@@ -138,7 +138,7 @@ void percorre_lista (void){
 	while(aux != NULL){
     //printf("%d\n", aux->instrucao);
 
-		switch (aux->instrucao){
+		switch (aux->instruction_name){
       		case nop:
                 insere_ASSMB(NOP);
       			break;
@@ -154,7 +154,7 @@ void percorre_lista (void){
                 listaAsmb->ultimo->op1.value = 27;
 
                 listaAsmb->ultimo->op2.type = Const;
-                listaAsmb->ultimo->op2.value = aux->op1.endereco;
+                listaAsmb->ultimo->op2.value = aux->op1.adress;
 
                 if(aux->op2.type == regTemp){
 
@@ -186,7 +186,7 @@ void percorre_lista (void){
                 listaAsmb->ultimo->op1.value = 27;
 
                 listaAsmb->ultimo->op2.type = Const;
-                listaAsmb->ultimo->op2.value = aux->op2.endereco;
+                listaAsmb->ultimo->op2.value = aux->op2.adress;
 
                 if(aux->op3.type == regTemp){
 

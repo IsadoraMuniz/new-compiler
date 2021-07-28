@@ -6,21 +6,19 @@
 #ifndef _CGEN_H_
 #define _CGEN_H_
 
-void gen_quad(TreeNode * tree);
+void code_gen(TreeNode * tree);
 
 void percorre(TreeNode * t);
 
 typedef enum {geral, id, Const, regTemp, labelk, funck} quadKind;
 
 typedef struct nodeQuad {
-
     quadKind type;
     char* name;
     int regTemp;
     int value;
-    int endereco;
+    int adress;
 
- 
 }quadNode;
 
 
@@ -41,11 +39,11 @@ typedef enum {
     jump,
     imed,
 	end
-} instr;
+} instruction;
 
 struct t_quad {
 
-    instr instrucao;
+    instruction instruction_name;
     quadNode op1;
     quadNode op2;
     quadNode op3;
@@ -53,11 +51,11 @@ struct t_quad {
     struct t_quad *proximo;
 };
 
-typedef struct t_quad quadrupla;
+typedef struct t_quad quadruple;
 
 typedef struct {
-    quadrupla *primeiro;
-    quadrupla *ultimo;
+    quadruple *primeiro;
+    quadruple *ultimo;
     int tamanho;
 
 } lista;
