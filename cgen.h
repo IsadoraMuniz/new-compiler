@@ -44,18 +44,14 @@ typedef enum {
 struct t_quad {
 
     instruction instruction_name;
-    quadNode op1;
-    quadNode op2;
-    quadNode op3;
-
-    struct t_quad *proximo;
+    quadNode op1, op2, op3;
+    struct t_quad *next;
 };
 
 typedef struct t_quad quadruple;
 
 typedef struct {
-    quadruple *primeiro;
-    quadruple *ultimo;
+    quadruple *first, *last;
     int tamanho;
 
 } lista;

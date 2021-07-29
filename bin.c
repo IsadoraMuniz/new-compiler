@@ -267,7 +267,7 @@ void make_bin(instruction_cell *aux){
 		}
 
 		PC++;
-		aux = aux->proximo;
+		aux = aux->next;
 	}
 
 	fprintf(code,"\n	assign INSTRUCAO = memoria [PC]; \n\nendmodule\n");

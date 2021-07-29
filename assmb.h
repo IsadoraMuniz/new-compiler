@@ -55,14 +55,14 @@ struct t_assmb {
     assmbNode op2;
     assmbNode op3;
 
-    struct t_assmb *proximo;
+    struct t_assmb *next;
 };
 
 typedef struct t_assmb instruction_cell;
 
 typedef struct {
-    instruction_cell *primeiro;
-    instruction_cell *ultimo;
+    instruction_cell *first;
+    instruction_cell *last;
     int tamanho;
 
 } TList_assembly;

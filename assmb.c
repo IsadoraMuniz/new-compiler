@@ -19,24 +19,25 @@ void insert_assembly_code(OPCODE opcode) {
     instruction_cell *new;
     new=(instruction_cell*)malloc(sizeof(instruction_cell));
     
-    new->proximo= NULL;
+    new->next= NULL;
     new->opcode = opcode;
 
     if(assembly_list->tamanho==0) {
 
-        assembly_list->primeiro=new;
+        assembly_list->first=new;
 
     } 
     else {
 
-        assembly_list->ultimo->proximo=new;
+        assembly_list->last->next=new;
 
     }
 
-    assembly_list->ultimo=new;
+    assembly_list->last=new;
     assembly_list->tamanho++;
 
 }
+
 
 //print the list of assembly code
 void print_assembly_code(instruction_cell *Noaux){
@@ -123,14 +124,14 @@ void print_assembly_code(instruction_cell *Noaux){
         }
 
         printf("\n");
-        Noaux = Noaux->proximo;
+        Noaux = Noaux->next;
     }
 }
 
 
 void iterate_list(void){
 
-	quadruple *aux = lista_quad->primeiro;
+	quadruple *aux = lista_quad->first;
 
     int argmt = 21;
     int i;
@@ -150,72 +151,72 @@ void iterate_list(void){
             case store:
 
                 insert_assembly_code(LI);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = 27;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = 27;
 
-                assembly_list->ultimo->op2.type = constant;
-                assembly_list->ultimo->op2.value = aux->op1.adress;
+                assembly_list->last->op2.type = constant;
+                assembly_list->last->op2.value = aux->op1.adress;
 
                 if(aux->op2.type == regTemporary){
 
                     insert_assembly_code(ADD);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = 27;
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = 27;
 
-                    assembly_list->ultimo->op2.type = regTemporary;
-                    assembly_list->ultimo->op2.value = 27;
+                    assembly_list->last->op2.type = regTemporary;
+                    assembly_list->last->op2.value = 27;
 
-                    assembly_list->ultimo->op3.type = regTemporary;
-                    assembly_list->ultimo->op3.value = aux->op2.value;
+                    assembly_list->last->op3.type = regTemporary;
+                    assembly_list->last->op3.value = aux->op2.value;
 
                 }
 
                 insert_assembly_code(SW);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = 27;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = 27;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op3.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op3.value;
 
 
                 break;
 
             case load:
                 insert_assembly_code(LI);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = 27;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = 27;
 
-                assembly_list->ultimo->op2.type = constant;
-                assembly_list->ultimo->op2.value = aux->op2.adress;
+                assembly_list->last->op2.type = constant;
+                assembly_list->last->op2.value = aux->op2.adress;
 
                 if(aux->op3.type == regTemporary){
 
                     insert_assembly_code(ADD);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = 27;
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = 27;
 
-                    assembly_list->ultimo->op2.type = regTemporary;
-                    assembly_list->ultimo->op2.value = 27;
+                    assembly_list->last->op2.type = regTemporary;
+                    assembly_list->last->op2.value = 27;
 
-                    assembly_list->ultimo->op3.type = regTemporary;
-                    assembly_list->ultimo->op3.value = aux->op3.value;
+                    assembly_list->last->op3.type = regTemporary;
+                    assembly_list->last->op3.value = aux->op3.value;
 
                 }
 
                 insert_assembly_code(LW);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = 27;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = 27;
                 break;
 
 
             case fun: 
                 insert_assembly_code(LABEL);
-                assembly_list->ultimo->op1.type = funck;
-                assembly_list->ultimo->op1.name = aux->op1.name;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = funck;
+                assembly_list->last->op1.name = aux->op1.name;
+                assembly_list->last->op1.value = aux->op1.value;
                 break;
 
             case arg:
@@ -224,11 +225,11 @@ void iterate_list(void){
                 while(i<=argmt){
                     
                     insert_assembly_code(SW);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = i;
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = i;
 
-                    assembly_list->ultimo->op2.type = regTemporary;
-                    assembly_list->ultimo->op2.value = aux->op3.value;
+                    assembly_list->last->op2.type = regTemporary;
+                    assembly_list->last->op2.value = aux->op3.value;
 
                     i++;
                 } 
@@ -242,11 +243,11 @@ void iterate_list(void){
                 argmt++;
 
                 insert_assembly_code(MOVE);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = argmt;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = argmt;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op3.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op3.value;
 
                 break;
 
@@ -255,8 +256,8 @@ void iterate_list(void){
 
 
                     insert_assembly_code(OUT);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = 22;
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = 22;
 
 
                 }else if(strcmp(aux->op3.name, "input") == 0){
@@ -265,22 +266,22 @@ void iterate_list(void){
                     
 
                     insert_assembly_code(MOVE);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = aux->op1.value;
-                    assembly_list->ultimo->op2.type = regTemporary;
-                    assembly_list->ultimo->op2.value = 30;
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = aux->op1.value;
+                    assembly_list->last->op2.type = regTemporary;
+                    assembly_list->last->op2.value = 30;
                 }
                 else{
                     insert_assembly_code(JAL);
-                    assembly_list->ultimo->op2.type = funck;
-                    assembly_list->ultimo->op2.name = aux->op3.name;
-                    assembly_list->ultimo->op1.value = aux->op1.value;
+                    assembly_list->last->op2.type = funck;
+                    assembly_list->last->op2.name = aux->op3.name;
+                    assembly_list->last->op1.value = aux->op1.value;
                     if(aux->op1.type == regTemporary){
                         insert_assembly_code(MOVE);
-                        assembly_list->ultimo->op1.type = regTemporary;
-                        assembly_list->ultimo->op1.value = aux->op1.value;
-                        assembly_list->ultimo->op2.type = regTemporary;
-                        assembly_list->ultimo->op2.value = 28;
+                        assembly_list->last->op1.type = regTemporary;
+                        assembly_list->last->op1.value = aux->op1.value;
+                        assembly_list->last->op2.type = regTemporary;
+                        assembly_list->last->op2.value = 28;
                     }
                 }
                 break;
@@ -289,8 +290,8 @@ void iterate_list(void){
 
                 if(strcmp(aux->op1.name, "main") != 0){
                     insert_assembly_code(JR);
-                    assembly_list->ultimo->op1.type = regTemporary;
-                    assembly_list->ultimo->op1.value = 31;  
+                    assembly_list->last->op1.type = regTemporary;
+                    assembly_list->last->op1.value = 31;  
 
                 } 
                  
@@ -307,199 +308,199 @@ void iterate_list(void){
             case ret: 
 
                 insert_assembly_code(MOVE);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = 28;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = 28;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op1.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op1.value;
 
                 insert_assembly_code(JR);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = 31;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = 31;
 
                 break;
 
             case label: 
                 
                 insert_assembly_code(LABEL);
-                assembly_list->ultimo->op1.type = labelk;
-                assembly_list->ultimo->op1.value = aux->op3.value;
+                assembly_list->last->op1.type = labelk;
+                assembly_list->last->op1.value = aux->op3.value;
                 break;
 
             case IGLIGL:    
                 insert_assembly_code(SET);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;   
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;   
                 break;
 
 
             case DIF:     
                 insert_assembly_code(SDT);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                 break;
 
             case MEN:     
                 insert_assembly_code(SLT);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                 break;
 
             case MAI:     
                 insert_assembly_code(SGT);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                 break;
 
             case MAIGL:     
                 insert_assembly_code(SGE);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                 break;
 
             case MEIGL:     
                 insert_assembly_code(SLE);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                 break;
 
 
             case SOM:    
                 insert_assembly_code(ADD);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;
 
                 break;
 
             case SUBT:   
                 insert_assembly_code(SUB);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value; 
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value; 
                 
                 break;
 
             case MUL:  
                 insert_assembly_code(MULT);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value; 
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value; 
                   
                 break;
 
             case DIVI:  
                 insert_assembly_code(DIV);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = regTemporary;
-                assembly_list->ultimo->op3.value = aux->op3.value;  
+                assembly_list->last->op3.type = regTemporary;
+                assembly_list->last->op3.value = aux->op3.value;  
                  
                 break;
 
             case imed:    
                 insert_assembly_code(LI);
 
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op3.type = constant;
-                assembly_list->ultimo->op3.value = aux->op3.value;
+                assembly_list->last->op3.type = constant;
+                assembly_list->last->op3.value = aux->op3.value;
                 break;
 
             case jump:   
                 insert_assembly_code(JUMP);
-                assembly_list->ultimo->op1.type = labelk;
-                assembly_list->ultimo->op1.value = aux->op3.value;
+                assembly_list->last->op1.type = labelk;
+                assembly_list->last->op1.value = aux->op3.value;
                 break;
 
             case beq:    
                 insert_assembly_code(BEQ);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = labelk;
-                assembly_list->ultimo->op3.value = aux->op3.value;
+                assembly_list->last->op3.type = labelk;
+                assembly_list->last->op3.value = aux->op3.value;
                 break;
 
             case bne:    
                 insert_assembly_code(BNE);
-                assembly_list->ultimo->op1.type = regTemporary;
-                assembly_list->ultimo->op1.value = aux->op1.value;
+                assembly_list->last->op1.type = regTemporary;
+                assembly_list->last->op1.value = aux->op1.value;
 
-                assembly_list->ultimo->op2.type = regTemporary;
-                assembly_list->ultimo->op2.value = aux->op2.value;
+                assembly_list->last->op2.type = regTemporary;
+                assembly_list->last->op2.value = aux->op2.value;
 
-                assembly_list->ultimo->op3.type = labelk;
-                assembly_list->ultimo->op3.value = aux->op3.value;
+                assembly_list->last->op3.type = labelk;
+                assembly_list->last->op3.value = aux->op3.value;
                 break;
 
             default:
@@ -509,7 +510,7 @@ void iterate_list(void){
 
 		}
 
-		aux = aux->proximo;
+		aux = aux->next;
 	}
 
 }
@@ -520,13 +521,13 @@ void generate_assembly(void){
     
     assembly_list = (TList_assembly*)malloc(sizeof(TList_assembly));
 
-    assembly_list->primeiro = NULL;
-    assembly_list->ultimo = NULL;
+    assembly_list->first = NULL;
+    assembly_list->last = NULL;
     assembly_list->tamanho = 0;
 
 	iterate_list();
-	print_assembly_code(assembly_list->primeiro);
-    make_bin(assembly_list->primeiro);
+	print_assembly_code(assembly_list->first);
+    make_bin(assembly_list->first);
 }
 
 
