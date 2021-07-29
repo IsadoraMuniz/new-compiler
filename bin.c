@@ -24,23 +24,22 @@ void make_bin(instruction_cell *aux){
 	int val_op2;
 	int val_op3;
 
-	code = fopen("MEMORIA_INSTRUCAO.V", "w");
+	code = fopen("binary_code.txt", "w");
 
 	if(code == NULL){
-		printf("!!!!!FALHA AO CRIAR O ARQUIVO BINARIO!!!!!\n");
+		printf("Operation failed\n");
 		return;
 	}
 
-	fprintf(code, "module MEMORIA_INSTRUCAO(\n");
+	/* fprintf(code, "module MEMORIA_INSTRUCAO(\n");
 	fprintf(code, "	input [11:0] PC,\n");
 	fprintf(code, "	output wire [31:0] INSTRUCAO\n);\n");
-	fprintf(code, "	wire [31:0] memoria[511:0];\n\n");
+	fprintf(code, "	wire [31:0] memoria[511:0];\n\n"); */
 
 
 	while(aux != NULL){
 
-		fprintf(code, "	assign memoria[%d]=", PC);
-
+		/* fprintf(code, "	assign memoria[%d]=", PC); */
 
 		switch (aux->opcode){
 			case NOP:

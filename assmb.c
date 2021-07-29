@@ -38,6 +38,26 @@ void insert_assembly_code(OPCODE opcode) {
 
 }
 
+void assign_op_1(TList_assembly* assembly_list, int op_type_1, int op_value_1) {
+
+    assembly_list->last->op1.type = op_type_1;
+    assembly_list->last->op1.value = op_value_1;
+}
+
+void assign_operation(TList_assembly* assembly_list, int op_type_1, int value_1,
+                        int op_type_2, int value_2, int op_type_3, int value_3) {
+
+    assembly_list->last->op1.type = op_type_1;
+    assembly_list->last->op1.value = value_1;
+
+    assembly_list->last->op2.type = op_type_2;
+    assembly_list->last->op2.value = value_2;
+
+    assembly_list->last->op3.type = op_type_3;
+    assembly_list->last->op3.value = value_3;
+
+}
+
 
 //print the list of assembly code
 void print_assembly_code(instruction_cell *Noaux){
@@ -151,72 +171,46 @@ void iterate_list(void){
             case store:
 
                 insert_assembly_code(LI);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = 27;
-
-                assembly_list->last->op2.type = constant;
-                assembly_list->last->op2.value = aux->op1.adress;
-
-                if(aux->op2.type == regTemporary){
+                assign_operation(assembly_list, regTemporary, 27, 
+                                    constant,  aux->op1.adress, -1, -1);
+                
+                if(aux->op2.type == regTemporary) {
 
                     insert_assembly_code(ADD);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = 27;
-
-                    assembly_list->last->op2.type = regTemporary;
-                    assembly_list->last->op2.value = 27;
-
-                    assembly_list->last->op3.type = regTemporary;
-                    assembly_list->last->op3.value = aux->op2.value;
-
+                    assign_operation(assembly_list, regTemporary, 27, regTemporary,  
+                                        27, regTemporary, aux->op2.value);
                 }
 
                 insert_assembly_code(SW);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = 27;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op3.value;
-
+                assign_operation(assembly_list, regTemporary, 27, 
+                                    regTemporary,  aux->op3.value, -1, -1);
 
                 break;
 
             case load:
                 insert_assembly_code(LI);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = 27;
-
-                assembly_list->last->op2.type = constant;
-                assembly_list->last->op2.value = aux->op2.adress;
+                assign_operation(assembly_list, regTemporary, 27, 
+                                    constant,  aux->op2.adress, -1, -1);
 
                 if(aux->op3.type == regTemporary){
 
                     insert_assembly_code(ADD);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = 27;
-
-                    assembly_list->last->op2.type = regTemporary;
-                    assembly_list->last->op2.value = 27;
-
-                    assembly_list->last->op3.type = regTemporary;
-                    assembly_list->last->op3.value = aux->op3.value;
+                    assign_operation(assembly_list, regTemporary, 27, regTemporary,  
+                                        27, regTemporary, aux->op3.value);
 
                 }
 
                 insert_assembly_code(LW);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = 27;
+                assign_operation(assembly_list, regTemporary, aux->op1.value, regTemporary,  
+                                        27, -1, -1);
                 break;
 
 
             case fun: 
                 insert_assembly_code(LABEL);
-                assembly_list->last->op1.type = funck;
+                assign_op_1(assembly_list, funck, aux->op1.value);
                 assembly_list->last->op1.name = aux->op1.name;
-                assembly_list->last->op1.value = aux->op1.value;
+               
                 break;
 
             case arg:
@@ -225,11 +219,8 @@ void iterate_list(void){
                 while(i<=argmt){
                     
                     insert_assembly_code(SW);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = i;
-
-                    assembly_list->last->op2.type = regTemporary;
-                    assembly_list->last->op2.value = aux->op3.value;
+                    assign_operation(assembly_list, regTemporary, i, 
+                                    regTemporary,  aux->op3.value, -1, -1);
 
                     i++;
                 } 
@@ -243,11 +234,8 @@ void iterate_list(void){
                 argmt++;
 
                 insert_assembly_code(MOVE);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = argmt;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op3.value;
+                assign_operation(assembly_list, regTemporary, argmt, 
+                                    regTemporary, aux->op3.value, -1, -1);
 
                 break;
 
@@ -256,8 +244,7 @@ void iterate_list(void){
 
 
                     insert_assembly_code(OUT);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = 22;
+                    assign_op_1(assembly_list, regTemporary, 22);
 
 
                 }else if(strcmp(aux->op3.name, "input") == 0){
@@ -266,22 +253,20 @@ void iterate_list(void){
                     
 
                     insert_assembly_code(MOVE);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = aux->op1.value;
-                    assembly_list->last->op2.type = regTemporary;
-                    assembly_list->last->op2.value = 30;
+                    assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  30, -1, -1);
                 }
-                else{
+                else {
+
                     insert_assembly_code(JAL);
-                    assembly_list->last->op2.type = funck;
+                    assign_operation(assembly_list, -1, aux->op1.value, 
+                                    funck, -1, -1, -1);
                     assembly_list->last->op2.name = aux->op3.name;
-                    assembly_list->last->op1.value = aux->op1.value;
+                    
                     if(aux->op1.type == regTemporary){
                         insert_assembly_code(MOVE);
-                        assembly_list->last->op1.type = regTemporary;
-                        assembly_list->last->op1.value = aux->op1.value;
-                        assembly_list->last->op2.type = regTemporary;
-                        assembly_list->last->op2.value = 28;
+                        assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  28, -1, -1);
                     }
                 }
                 break;
@@ -290,224 +275,132 @@ void iterate_list(void){
 
                 if(strcmp(aux->op1.name, "main") != 0){
                     insert_assembly_code(JR);
-                    assembly_list->last->op1.type = regTemporary;
-                    assembly_list->last->op1.value = 31;  
-
+                    assign_op_1(assembly_list, regTemporary, 31); 
                 } 
                  
                 break;
 
             case alloc:  
-                /*
-                    Sem funcionalidade
-
-                */
+    
 
                 break;
 
             case ret: 
 
                 insert_assembly_code(MOVE);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = 28;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op1.value;
+                assign_operation(assembly_list, regTemporary, 28, 
+                                    regTemporary,  aux->op1.value, -1, -1);
 
                 insert_assembly_code(JR);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = 31;
+                assign_op_1(assembly_list, regTemporary, 31); 
 
                 break;
 
             case label: 
                 
                 insert_assembly_code(LABEL);
-                assembly_list->last->op1.type = labelk;
-                assembly_list->last->op1.value = aux->op3.value;
+                assign_op_1(assembly_list, labelk, aux->op3.value); 
+
                 break;
 
             case IGLIGL:    
                 insert_assembly_code(SET);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;   
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);  
                 break;
 
 
             case DIF:     
                 insert_assembly_code(SDT);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
                 break;
 
             case MEN:     
                 insert_assembly_code(SLT);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
+                 
                 break;
 
             case MAI:     
                 insert_assembly_code(SGT);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
+    
                 break;
 
             case MAIGL:     
                 insert_assembly_code(SGE);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
+                 
                 break;
 
             case MEIGL:     
                 insert_assembly_code(SLE);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
+                 
                 break;
 
 
             case SOM:    
                 insert_assembly_code(ADD);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
 
                 break;
 
             case SUBT:   
                 insert_assembly_code(SUB);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value; 
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
                 
                 break;
 
             case MUL:  
                 insert_assembly_code(MULT);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value; 
-                  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
+                   
                 break;
 
             case DIVI:  
                 insert_assembly_code(DIV);
-
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = regTemporary;
-                assembly_list->last->op3.value = aux->op3.value;  
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value); 
                  
                 break;
 
             case imed:    
                 insert_assembly_code(LI);
 
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op3.type = constant;
-                assembly_list->last->op3.value = aux->op3.value;
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
                 break;
 
             case jump:   
                 insert_assembly_code(JUMP);
-                assembly_list->last->op1.type = labelk;
-                assembly_list->last->op1.value = aux->op3.value;
+                assign_op_1(assembly_list, labelk, aux->op3.value);
+    
                 break;
 
             case beq:    
                 insert_assembly_code(BEQ);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = labelk;
-                assembly_list->last->op3.value = aux->op3.value;
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
                 break;
 
             case bne:    
                 insert_assembly_code(BNE);
-                assembly_list->last->op1.type = regTemporary;
-                assembly_list->last->op1.value = aux->op1.value;
-
-                assembly_list->last->op2.type = regTemporary;
-                assembly_list->last->op2.value = aux->op2.value;
-
-                assembly_list->last->op3.type = labelk;
-                assembly_list->last->op3.value = aux->op3.value;
+                assign_operation(assembly_list, regTemporary, aux->op1.value, 
+                                    regTemporary,  aux->op2.value, regTemporary, aux->op3.value);
                 break;
 
             default:
-                printf("no nao achado\n");
+                printf("node not found\n");
                 break;
-
-
 		}
 
 		aux = aux->next;
