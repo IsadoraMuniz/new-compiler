@@ -12,6 +12,20 @@
 
 #define MAX 10000
 
+
+char *decimalToExtendedBinary(int decimal, int length) {
+    char *binary = (char*) malloc((length + 1) * sizeof(char));
+    
+    int i;
+    for (i = length-1; i >= 0; i--) {
+        binary[i] = decimal % 2 ? '1' : '0';
+        decimal = decimal / 2;
+    }
+    binary[length] = '\0';
+
+    return binary;
+}
+
 void make_bin(instruction_cell *aux){
 
 	int PC = 0;
@@ -254,6 +268,7 @@ void make_bin(instruction_cell *aux){
 
 		}
 
+		printf("%s\n", decimalToExtendedBinary(opcode, 32));
 		fprintf(code, "{5'd%d, ", opcode);
 		if(formato == 1){
 			fprintf(code, "5'd%d, 5'd%d, 5'd%d, 12'd0 }\n", val_op1, val_op2, val_op3);
