@@ -72,7 +72,7 @@ int main( int argc, char * argv[] )
 #if !NO_CODE
   if (! Error)
   { 
-    fprintf(listing,"\n\n\n           Quadruplas Gerador de Codigo:\n\n");
+    fprintf(listing,"\n\n\n           Quadruplas Geradas !\n");
     generate_intermediate_code(syntaxTree);
   }
 #endif

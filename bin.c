@@ -214,5 +214,5 @@ void make_bin(instruction_cell *aux){
 	}
 
 	fclose(code);
-	printf("\n\n	Codigo binario gerado	\n\n");
+	printf("\n\n	   Codigo binario gerado !\n\n");
 }

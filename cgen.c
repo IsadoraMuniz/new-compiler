@@ -49,6 +49,15 @@ void temp_counter_func(void)
 void print_quadruple(quadruple *aux_quadruple)
 {
     char *aux;
+    FILE *output_file = NULL;
+
+    output_file = fopen("intermediate_code.txt", "w");
+
+    if (output_file == NULL)
+    {
+        printf("Operation failed\n");
+        return;
+    }
 
     while (aux_quadruple != NULL)
     {
@@ -132,59 +141,72 @@ void print_quadruple(quadruple *aux_quadruple)
             break;
         }
 
-        printf("( %-6s,", aux);
+        fprintf(output_file, "( %-6s,", aux);
 
         switch (aux_quadruple->op1.type)
         {
         case general:
-            printf(" %-10s,", aux_quadruple->op1.name);
+
+            fprintf(output_file, " %-10s,", aux_quadruple->op1.name);
             break;
         case id:
             break;
         case regTemporary:
-            printf(" t_%-8d,", aux_quadruple->op1.value);
+
+            fprintf(output_file, " t_%-8d,", aux_quadruple->op1.value);
+
             break;
         case constant:
-            printf(" %-10d,", aux_quadruple->op1.value);
+
+            fprintf(output_file, " %-10d,", aux_quadruple->op1.value);
             break;
         case labelk:
-            printf(" L_%-8d,", aux_quadruple->op1.value);
+
+            fprintf(output_file, " L_%-8d,", aux_quadruple->op1.value);
             break;
         }
 
         switch (aux_quadruple->op2.type)
         {
         case general:
-            printf(" %-10s,", aux_quadruple->op2.name);
+
+            fprintf(output_file, " %-10s,", aux_quadruple->op2.name);
+
             break;
         case id:
             break;
         case regTemporary:
-            printf(" t_%-8d,", aux_quadruple->op2.value);
+
+            fprintf(output_file, " t_%-8d,", aux_quadruple->op2.value);
             break;
         case constant:
-            printf(" %-10d,", aux_quadruple->op2.value);
+
+            fprintf(output_file, " %-10d,", aux_quadruple->op2.value);
             break;
         case labelk:
-            printf(" L_%-8d,", aux_quadruple->op2.value);
+
+            fprintf(output_file, " L_%-8d,", aux_quadruple->op2.value);
             break;
         }
 
         switch (aux_quadruple->op3.type)
         {
         case general:
-            printf(" %-10s )\n", aux_quadruple->op3.name);
+
+            fprintf(output_file, " %-10s )\n", aux_quadruple->op3.name);
             break;
         case id:
             break;
         case regTemporary:
-            printf(" t_%-8d )\n", aux_quadruple->op3.value);
+
+            fprintf(output_file, " t_%-8d )\n", aux_quadruple->op3.value);
             break;
         case constant:
-            printf(" %-10d )\n", aux_quadruple->op3.value);
+
+            fprintf(output_file, " %-10d )\n", aux_quadruple->op3.value);
             break;
         case labelk:
-            printf(" L_%-8d )\n", aux_quadruple->op3.value);
+            fprintf(output_file, " L_%-8d )\n", aux_quadruple->op3.value);
             break;
         }
 
