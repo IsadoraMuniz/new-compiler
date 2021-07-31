@@ -51,7 +51,7 @@ void print_quadruple(quadruple *aux_quadruple)
     char *aux;
     FILE *output_file = NULL;
 
-    output_file = fopen("intermediate_code.txt", "w");
+    output_file = fopen("output-files/intermediate_code.txt", "w");
 
     if (output_file == NULL)
     {

@@ -69,7 +69,7 @@ void print_assembly_code(instruction_cell *Noaux)
 
     FILE *output_file = NULL;
 
-    output_file = fopen("assembly_code.txt", "w");
+    output_file = fopen("output-files/assembly_code.txt", "w");
 
     if (output_file == NULL)
     {

@@ -54,7 +54,7 @@ void make_bin(instruction_cell *aux){
 
 	instruction_info instruction;
 
-	code = fopen("binary_code.txt", "w");
+	code = fopen("output-files/binary_code.txt", "w");
 
 	if(code == NULL){
 		printf("Operation failed\n");
