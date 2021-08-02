@@ -43,13 +43,13 @@ instruction_info assign_instruction(int opcode, int formato,
 
 }
 
-void make_bin(instruction_cell *aux){
+void generate_binary(instruction_cell *aux){
 
 	int PC = 0;
 
 	int linha;
 
-	 int opcode, formato, val_op1;
+	int opcode, formato, val_op1;
     int val_op2, val_op3;
 
 	instruction_info instruction;

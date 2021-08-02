@@ -6,7 +6,7 @@
 #ifndef _BIN_H_
 #define _BIN_H_
 
-void make_bin(instruction_cell *aux);
+void generate_binary(instruction_cell *aux);
 
 typedef struct {
     int opcode, formato, val_op1;

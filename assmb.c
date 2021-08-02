@@ -514,5 +514,5 @@ void generate_assembly(void)
 
     iterate_list();
     print_assembly_code(assembly_list->first);
-    make_bin(assembly_list->first);
+    generate_binary(assembly_list->first);
 }
