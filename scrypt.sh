@@ -6,4 +6,4 @@ rm *.o
 rm *.yy.c
 rm *.tab.c
 rm *.tab.h
-./Cmenos gcd.Cmenos
+./Cmenos sort.Cmenos

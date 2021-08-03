@@ -231,6 +231,10 @@ int create_quadruple(TreeNode *tree)
             insert(beq, "", "", "");
             lista_quad->last->op1.type = regTemporary;
             lista_quad->last->op1.value = left;
+
+            lista_quad->last->op2.type = regTemporary;
+            lista_quad->last->op2.value = 0;
+
             lista_quad->last->op3.type = labelk;
 
             n_line++;
@@ -392,6 +396,7 @@ int create_quadruple(TreeNode *tree)
             {
                 insert(load, "", "", tree->attr.name);
             }
+            lista_quad->last->op2.adress = adress;
             lista_quad->last->op1.type = regTemporary;
             temp_counter_func();
             lista_quad->last->op1.value = temp_counter;
