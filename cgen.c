@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-char *escopoAux = "global";
+char *scope_var = "global";
 int temp_counter = 0;
 int n_line = 0;
 
@@ -26,14 +26,14 @@ void insert(instruction instruction_name, char *op1, char *op2, char *op3)
     new->op2.name = op2;
     new->op3.name = op3;
 
-    if (lista_quad->tamanho == 0)
-        lista_quad->first = new;
+    if (quadruple_list->tamanho == 0)
+        quadruple_list->first = new;
 
     else
-        lista_quad->last->next = new;
+        quadruple_list->last->next = new;
 
-    lista_quad->last = new;
-    lista_quad->tamanho++;
+    quadruple_list->last = new;
+    quadruple_list->tamanho++;
 }
 
 void temp_counter_func(void)
@@ -44,6 +44,37 @@ void temp_counter_func(void)
     {
         temp_counter = 1;
     }
+}
+
+void assign_single_op(lista *assembly_list, int operande, int op_type, int op_value)
+{
+    if(operande == 1) {
+        assembly_list->last->op1.type = op_type;
+        assembly_list->last->op1.value = op_value;
+    }
+    else if(operande == 2) {
+        assembly_list->last->op2.type = op_type;
+        assembly_list->last->op2.value = op_value;
+    }
+    else {
+        assembly_list->last->op3.type = op_type;
+        assembly_list->last->op3.value = op_value;
+    } 
+    
+}
+
+void assign_quadruple(lista *quadruple_list, int op_type_1, int value_1,
+                      int op_type_2, int value_2, int op_type_3, int value_3)
+{
+
+    quadruple_list->last->op1.type = op_type_1;
+    quadruple_list->last->op1.value = value_1;
+
+    quadruple_list->last->op2.type = op_type_2;
+    quadruple_list->last->op2.value = value_2;
+
+    quadruple_list->last->op3.type = op_type_3;
+    quadruple_list->last->op3.value = value_3;
 }
 
 void print_quadruple(quadruple *aux_quadruple)
@@ -229,98 +260,75 @@ int create_quadruple(TreeNode *tree)
 
             left = create_quadruple(tree->child[0]);
             insert(beq, "", "", "");
-            lista_quad->last->op1.type = regTemporary;
-            lista_quad->last->op1.value = left;
-
-            lista_quad->last->op2.type = regTemporary;
-            lista_quad->last->op2.value = 0;
-
-            lista_quad->last->op3.type = labelk;
-
             n_line++;
-            lista_quad->last->op3.value = n_line;
+            assign_quadruple(quadruple_list, regTemporary, left, regTemporary, 0, labelk, n_line);
             aux_value = n_line;
             traverse(tree->child[1]);
 
             if (tree->child[2] == NULL)
             {
                 insert(label, "", "", "");
-                lista_quad->last->op3.type = labelk;
-                lista_quad->last->op3.value = aux_value;
+                assign_single_op(quadruple_list, 3, labelk, aux_value);
                 break;
             }
             else
             {
                 insert(jump, "", "", "");
-                lista_quad->last->op3.type = labelk;
-
                 n_line++;
-                lista_quad->last->op3.value = n_line;
+                assign_single_op(quadruple_list, 3, labelk, n_line);
+               
                 insert(label, "", "", "");
-                lista_quad->last->op3.type = labelk;
-                lista_quad->last->op3.value = aux_value;
+                assign_single_op(quadruple_list, 3, labelk, aux_value);
 
                 traverse(tree->child[2]);
                 insert(label, "", "", "");
-                lista_quad->last->op3.type = labelk;
-                lista_quad->last->op3.value = aux_value + 1;
+                assign_single_op(quadruple_list, 3, labelk, aux_value+1);
+                
             }
             break;
 
         case whileK:
 
             insert(label, "", "", "");
-            lista_quad->last->op3.type = labelk;
             n_line++;
-            lista_quad->last->op3.value = n_line;
+            assign_single_op(quadruple_list, 3, labelk, n_line);
             left = create_quadruple(tree->child[0]);
 
             insert(beq, "", "", "");
-            lista_quad->last->op1.type = regTemporary;
-            lista_quad->last->op1.value = left;
-
-            lista_quad->last->op2.type = regTemporary;
-            lista_quad->last->op2.value = 0;
-
-            lista_quad->last->op3.type = labelk;
             n_line++;
-            lista_quad->last->op3.value = n_line;
-
+            assign_quadruple(quadruple_list, regTemporary, left, regTemporary, 0, labelk, n_line);
             aux_value = n_line;
             traverse(tree->child[1]);
 
             insert(jump, "", "", "");
-            lista_quad->last->op3.type = labelk;
-            lista_quad->last->op3.value = aux_value - 1;
+            assign_single_op(quadruple_list, 3, labelk, aux_value - 1);
+           
 
             insert(label, "", "", "");
-            lista_quad->last->op3.type = labelk;
-            lista_quad->last->op3.value = aux_value;
+            assign_single_op(quadruple_list, 3, labelk, aux_value);
 
             break;
 
         case assignK:
             right = create_quadruple(tree->child[1]);
 
-            adress = busca_end(tree->child[0]->attr.name, escopoAux);
+            adress = busca_end(tree->child[0]->attr.name, scope_var);
 
             if (tree->child[0]->child[0] != NULL)
             {
 
                 left = create_quadruple(tree->child[0]->child[0]);
                 insert(store, tree->child[0]->attr.name, "", "");
-                lista_quad->last->op2.type = regTemporary;
-                lista_quad->last->op2.value = left;
+                assign_single_op(quadruple_list, 2, regTemporary, left);
+               
             }
             else
             {
                 insert(store, tree->child[0]->attr.name, "", "");
             }
 
-            lista_quad->last->op1.adress = adress;
-
-            lista_quad->last->op3.type = regTemporary;
-            lista_quad->last->op3.value = right;
+            quadruple_list->last->op1.adress = adress;
+            assign_single_op(quadruple_list, 3, regTemporary, right);
 
             break;
 
@@ -329,13 +337,11 @@ int create_quadruple(TreeNode *tree)
             {
                 left = create_quadruple(tree->child[0]);
                 insert(ret, "", "", "");
-                lista_quad->last->op1.type = regTemporary;
-                lista_quad->last->op1.value = left;
+                assign_single_op(quadruple_list, 1, regTemporary, left);
             }
             else
-            {
                 insert(ret, "", "", "");
-            }
+            
             break;
 
         default:
@@ -350,7 +356,6 @@ int create_quadruple(TreeNode *tree)
 
             if (tree->child[0]->kind.exp != operationK && tree->child[1]->kind.exp == operationK)
             {
-
                 right = create_quadruple(tree->child[1]);
                 left = create_quadruple(tree->child[0]);
             }
@@ -361,74 +366,64 @@ int create_quadruple(TreeNode *tree)
             }
             insert(tree->attr.op, "", "", "");
             temp_counter++;
-            lista_quad->last->op1.type = regTemporary;
-            lista_quad->last->op1.value = temp_counter;
-
-            lista_quad->last->op2.type = regTemporary;
-            lista_quad->last->op2.value = left;
-
-            lista_quad->last->op3.type = regTemporary;
-            lista_quad->last->op3.value = right;
+            assign_quadruple(quadruple_list, regTemporary, temp_counter, regTemporary, left, regTemporary, right);
+            
             return temp_counter;
             break;
 
         case constantK:
             insert(imed, "", "", "");
-            lista_quad->last->op1.type = regTemporary;
             temp_counter_func();
-            lista_quad->last->op1.value = temp_counter;
-            lista_quad->last->op3.type = constant;
-            lista_quad->last->op3.value = tree->attr.val;
+            assign_single_op(quadruple_list, 1, regTemporary, temp_counter);
+            assign_single_op(quadruple_list, 3, constant, tree->attr.val);
+            
             return temp_counter;
             break;
 
         case idK:
 
-            adress = busca_end(tree->attr.name, escopoAux);
+            adress = busca_end(tree->attr.name, scope_var);
             if (tree->child[0] != NULL)
             {
                 right = create_quadruple(tree->child[0]);
                 insert(load, "", tree->attr.name, "");
-                lista_quad->last->op3.type = regTemporary;
-                lista_quad->last->op3.value = right;
+                assign_single_op(quadruple_list, 3, regTemporary, right);
+               
             }
             else
-            {
                 insert(load, "", "", tree->attr.name);
-            }
-            lista_quad->last->op2.adress = adress;
-            lista_quad->last->op1.type = regTemporary;
+            
+            quadruple_list->last->op2.adress = adress;
             temp_counter_func();
-            lista_quad->last->op1.value = temp_counter;
+            assign_single_op(quadruple_list, 1, regTemporary, temp_counter);
+            
             return temp_counter;
             break;
 
         case variableK:
 
-            adress = busca_end(tree->attr.name, escopoAux);
+            adress = busca_end(tree->attr.name, scope_var);
             if (tree->child[0] != NULL)
             {
                 if (tree->child[0]->kind.exp == constantK)
                 {
-                    insert(alloc, tree->attr.name, "", escopoAux);
-                    lista_quad->last->op2.type = constant;
-                    lista_quad->last->op2.value = tree->child[0]->attr.val;
+                    insert(alloc, tree->attr.name, "", scope_var);
+                    assign_single_op(quadruple_list, 2, constant, tree->child[0]->attr.val); 
                 }
             }
             else
             {
-                insert(alloc, tree->attr.name, "", escopoAux);
-                lista_quad->last->op2.type = constant;
-                lista_quad->last->op2.value = 1;
+                insert(alloc, tree->attr.name, "", scope_var);
+                assign_single_op(quadruple_list, 2, constant, 1);
             }
-            lista_quad->last->op1.adress = adress;
+            quadruple_list->last->op1.adress = adress;
             break;
 
         case functionK:
             insert(fun, tree->attr.name, "", "");
-            escopoAux = tree->attr.name;
+            scope_var = tree->attr.name;
             n_line++;
-            lista_quad->last->op1.value = n_line;
+            quadruple_list->last->op1.value = n_line;
             traverse(tree->child[0]);
             traverse(tree->child[1]);
             break;
@@ -440,8 +435,8 @@ int create_quadruple(TreeNode *tree)
             {
                 aux_value = create_quadruple(aux);
                 insert(setArg, "", "", "");
-                lista_quad->last->op3.type = regTemporary;
-                lista_quad->last->op3.value = aux_value;
+                assign_single_op(quadruple_list, 3, regTemporary, aux_value);
+                
                 aux = aux->sibling;
             }
             insert(call, "", "", tree->attr.name);
@@ -451,8 +446,7 @@ int create_quadruple(TreeNode *tree)
                 if (strcmp(tree->attr.name, "output") != 0)
                 {
                     temp_counter_func();
-                    lista_quad->last->op1.type = regTemporary;
-                    lista_quad->last->op1.value = temp_counter;
+                    assign_single_op(quadruple_list, 1, regTemporary, temp_counter);   
                 }
             }
             return temp_counter;
@@ -463,10 +457,9 @@ int create_quadruple(TreeNode *tree)
             break;
 
         case paramK:
-
-            adress = busca_end(tree->attr.name, escopoAux);
-            insert(arg, tree->attr.name, "", escopoAux);
-            lista_quad->last->op1.adress = adress;
+            adress = busca_end(tree->attr.name, scope_var);
+            insert(arg, tree->attr.name, "", scope_var);
+            quadruple_list->last->op1.adress = adress;
             break;
 
         default:
@@ -492,15 +485,15 @@ void traverse(TreeNode *t)
 
 void generate_intermediate_code(TreeNode *tree)
 {
-    lista_quad = (lista *)malloc(sizeof(lista));
+    quadruple_list = (lista *)malloc(sizeof(lista));
 
-    lista_quad->first = NULL;
-    lista_quad->last = NULL;
-    lista_quad->tamanho = 0;
+    quadruple_list->first = NULL;
+    quadruple_list->last = NULL;
+    quadruple_list->tamanho = 0;
 
     insert(nop, "", "", "");
     traverse(tree);
     insert(halt, "", "", "");
-    print_quadruple(lista_quad->first);
+    print_quadruple(quadruple_list->first);
     generate_assembly();
 }

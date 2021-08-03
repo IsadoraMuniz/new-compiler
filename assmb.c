@@ -245,7 +245,7 @@ void print_assembly_code(instruction_cell *Noaux)
 void iterate_list(void)
 {
 
-    quadruple *aux = lista_quad->first;
+    quadruple *aux = quadruple_list->first;
 
     int argmt = 21;
     int i;

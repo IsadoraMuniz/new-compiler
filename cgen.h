@@ -57,7 +57,7 @@ typedef struct {
 } lista;
 
 //Variavel que contem a lista encadeada de quadruplas
-lista *lista_quad;
+lista *quadruple_list;
 
 #endif
 
