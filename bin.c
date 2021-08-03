@@ -1,5 +1,3 @@
-
-
 /****************************************************/
 /*              Gerador de codigo binario           */
 /*                 Isadora Muniz                    */
@@ -36,8 +34,8 @@ instruction_info assign_instruction(int opcode, int formato,
 	new_instruction.opcode = opcode;
 	new_instruction.formato = formato;
 	new_instruction.val_op1 = val_op1;
-	new_instruction.val_op1 = val_op2;
-	new_instruction.val_op1 = val_op3;
+	new_instruction.val_op2 = val_op2;
+	new_instruction.val_op3 = val_op3;
 
 	return new_instruction;
 
@@ -45,12 +43,9 @@ instruction_info assign_instruction(int opcode, int formato,
 
 void generate_binary(instruction_cell *aux){
 
-	int PC = 0;
+	int count = 0;
 
 	int linha;
-
-	int opcode, formato, val_op1;
-    int val_op2, val_op3;
 
 	instruction_info instruction;
 
@@ -91,7 +86,7 @@ void generate_binary(instruction_cell *aux){
 
 			case LABEL:
 				instruction = assign_instruction(7, 4, aux->op1.value, 0, 0); 
-				linha = PC;
+				linha = count;
 				
 				break;
 
@@ -209,8 +204,9 @@ void generate_binary(instruction_cell *aux){
 			fprintf(code,"%s\n", decimalToExtendedBinary(instruction.val_op1, 27));
 		}
 
-		PC++;
+		
 		aux = aux->next;
+		count++;
 	}
 
 	fclose(code);
