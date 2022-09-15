@@ -1,14 +1,14 @@
-/****************************************************/
-/* 					                                */
-/*          Lib Analisador Semantico                */
-/*               Isadora Muniz                      */
-/****************************************************/
-
 #ifndef _ANALYZE_H_
 #define _ANALYZE_H_
 
-void buildSymtab(TreeNode *);
+/* Function buildSymtab constructs the symbol 
+ * table by preorder traversal of the syntax tree
+ */
+void constroi_tabela(Node *);
 
-void typeCheck(TreeNode *);
+/* Procedure typeCheck performs type checking 
+ * by a postorder syntax tree traversal
+ */
+void checagem_tipo(Node *);
 
 #endif

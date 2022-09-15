@@ -1,499 +1,307 @@
-/****************************************************/
-/*              Gerador de codigos                  */
-/*                 Isadora Muniz                    */
-/****************************************************/
-
 #include "globals.h"
 #include "symtab.h"
-#include "analyze.h"
-#include "assmb.h"
+#include "code.h"
 #include "cgen.h"
-#include <stdio.h>
-#include <string.h>
+#define MAX_ARGS 4
 
-char *scope_var = "global";
-int temp_counter = 0;
-int n_line = 0;
+static int temp = 0;
 
-void insert(instruction instruction_name, char *op1, char *op2, char *op3)
-{
-    quadruple *new;
-    new = (quadruple *)malloc(sizeof(quadruple));
+static int label = 0;
 
-    new->next = NULL;
-    new->instruction_name = instruction_name;
-    new->op1.name = op1;
-    new->op2.name = op2;
-    new->op3.name = op3;
+static int buscar_irmao = 1;
 
-    if (quadruple_list->tamanho == 0)
-        quadruple_list->first = new;
+static int label_func_actual = 0;
 
-    else
-        quadruple_list->last->next = new;
+static int cGen (Node * no);
 
-    quadruple_list->last = new;
-    quadruple_list->tamanho++;
-}
+static int genDcl (Node * no) {
+   int ret, op;
+   int base, pos;
+   int aux;
+   int cont, param;
+   int inicio_while, fim_while;
+   char * name;
+   Node * brother;
+   switch (no->tipo.dcl) {
+      case tif:
+         ret = cGen(no->filho[0]); //condição contrária do if, resultado tem que guardar em algum lugar
+         
+         fprintf(code, "(IF,$t%d,L%d,-)\n", ret, label); // se condição ao contrário é verdadeira, pula pro else
 
-void temp_counter_func(void)
-{
-    temp_counter++;
+         cGen(no->filho[1]); // entra no bloco if
+         // preciso ir pro fim do bloco if-else, já que nem sempre o fim da condição é um return pra ir pro fim da função
+         fprintf(code, "(GOTO,L%d,-,-)\n", label+1);
 
-    if (temp_counter == 4)
-    {
-        temp_counter = 1;
-    }
-}
+         fprintf(code, "(LABEL,L%d,-,-)\n", label); // bloco else
+         label++;
+         cGen(no->filho[2]);
 
-void assign_single_op(lista *assembly_list, int operande, int op_type, int op_value)
-{
-    if(operande == 1) {
-        assembly_list->last->op1.type = op_type;
-        assembly_list->last->op1.value = op_value;
-    }
-    else if(operande == 2) {
-        assembly_list->last->op2.type = op_type;
-        assembly_list->last->op2.value = op_value;
-    }
-    else {
-        assembly_list->last->op3.type = op_type;
-        assembly_list->last->op3.value = op_value;
-    } 
-    
-}
+         // label do fim do bloco if-else
+         fprintf(code, "(LABEL,L%d,-,-)\n", label);
+         label++;
+      break;
 
-void assign_quadruple(lista *quadruple_list, int op_type_1, int value_1,
-                      int op_type_2, int value_2, int op_type_3, int value_3)
-{
+      case twhile:
+         inicio_while = label;
+         fprintf(code, "(LABEL,L%d,-,-)\n", inicio_while); // label começo do while
+         label++;
+         fim_while = label;
+         label++;
 
-    quadruple_list->last->op1.type = op_type_1;
-    quadruple_list->last->op1.value = value_1;
+         op = cGen(no->filho[0]); // checa condição oposta
+         fprintf(code, "(IF,$t%d,L%d,-)\n", op, fim_while); // fim do while
 
-    quadruple_list->last->op2.type = op_type_2;
-    quadruple_list->last->op2.value = value_2;
+         ret = cGen(no->filho[1]); // executa a parte de dentro do while
+         fprintf(code, "(GOTO,L%d,-,-)\n", inicio_while); // volta para o inicio para checar a condição de novo
 
-    quadruple_list->last->op3.type = op_type_3;
-    quadruple_list->last->op3.value = value_3;
-}
+         fprintf(code, "(LABEL,L%d,-,-)\n", fim_while); // label do fim do while
+      break;
 
-void print_quadruple(quadruple *aux_quadruple)
-{
-    char *aux;
-    FILE *output_file = NULL;
+      case tigual:
+         if (no->filho[0]->filho[0] != NULL)
+            pos = cGen(no->filho[0]->filho[0]);
+         else 
+            pos = -1;
 
-    output_file = fopen("output-files/intermediate_code.txt", "w");
+         base = cGen(no->filho[1]);
+         if (pos == -1) 
+            fprintf(code, "(STORE,$t%d,%s,-)\n", base, no->filho[0]->atr.nome);
+         else
+            fprintf(code, "(STORE,$t%d,%s,$t%d)\n", base, no->filho[0]->atr.nome, pos);
+         temp = 0;
+      break;
 
-    if (output_file == NULL)
-    {
-        printf("Operation failed\n");
-        return;
-    }
-
-    while (aux_quadruple != NULL)
-    {
-        switch (aux_quadruple->instruction_name)
-        {
-
-        case nop:
-            aux = "nop";
+      case tvariavel:
+         fprintf(code, "(ALLOC,%s,%s,-)\n", no->atr.nome, no->atr.escopo);
+      break;
+      
+      case tvector:
+         fprintf(code, "(ALLOC_V,%s,%s,%d)\n", no->atr.nome, no->atr.escopo, no->atr.len);
+         return -1;
+      break;
+      
+      case tfunction:
+         switch (no->typeExp) {
+            case tint:
+               fprintf(code, "(FUNC,int,%s,-)\n", no->atr.nome);
             break;
-        case halt:
-            aux = "halt";
-            break;
-        case store:
-            aux = "store";
-            break;
-        case fun:
-            aux = "fun";
-            break;
-        case arg:
-            aux = "arg";
-            break;
-        case setArg:
-            aux = "setArg";
-            break;
-        case call:
-            aux = "call";
-            break;
-        case end:
-            aux = "end";
-            break;
-        case load:
-            aux = "load";
-            break;
-        case alloc:
-            aux = "alloc";
-            break;
-        case ret:
-            aux = "ret";
-            break;
-        case label:
-            aux = "label";
-            break;
-        case IGLIGL:
-            aux = "==";
-            break;
-        case DIF:
-            aux = "!=";
-            break;
-        case MEN:
-            aux = "<";
-            break;
-        case MAI:
-            aux = ">";
-            break;
-        case MEIGL:
-            aux = "<=";
-            break;
-        case MAIGL:
-            aux = ">=";
-            break;
-        case SOM:
-            aux = "+";
-            break;
-        case SUBT:
-            aux = "-";
-            break;
-        case MUL:
-            aux = "*";
-            break;
-        case DIVI:
-            aux = "/";
-            break;
-        case imed:
-            aux = "imed";
-            break;
-        case jump:
-            aux = "jump";
-            break;
-        case beq:
-            aux = "beq";
-            break;
-        }
-
-        fprintf(output_file, "( %-6s,", aux);
-
-        switch (aux_quadruple->op1.type)
-        {
-        case general:
-
-            fprintf(output_file, " %-10s,", aux_quadruple->op1.name);
-            break;
-        case id:
-            break;
-        case regTemporary:
-
-            fprintf(output_file, " t_%-8d,", aux_quadruple->op1.value);
-
-            break;
-        case constant:
-
-            fprintf(output_file, " %-10d,", aux_quadruple->op1.value);
-            break;
-        case labelk:
-
-            fprintf(output_file, " L_%-8d,", aux_quadruple->op1.value);
-            break;
-        }
-
-        switch (aux_quadruple->op2.type)
-        {
-        case general:
-
-            fprintf(output_file, " %-10s,", aux_quadruple->op2.name);
-
-            break;
-        case id:
-            break;
-        case regTemporary:
-
-            fprintf(output_file, " t_%-8d,", aux_quadruple->op2.value);
-            break;
-        case constant:
-
-            fprintf(output_file, " %-10d,", aux_quadruple->op2.value);
-            break;
-        case labelk:
-
-            fprintf(output_file, " L_%-8d,", aux_quadruple->op2.value);
-            break;
-        }
-
-        switch (aux_quadruple->op3.type)
-        {
-        case general:
-
-            fprintf(output_file, " %-10s )\n", aux_quadruple->op3.name);
-            break;
-        case id:
-            break;
-        case regTemporary:
-
-            fprintf(output_file, " t_%-8d )\n", aux_quadruple->op3.value);
-            break;
-        case constant:
-
-            fprintf(output_file, " %-10d )\n", aux_quadruple->op3.value);
-            break;
-        case labelk:
-            fprintf(output_file, " L_%-8d )\n", aux_quadruple->op3.value);
-            break;
-        }
-
-        aux_quadruple = aux_quadruple->next;
-    }
-}
-
-int create_quadruple(TreeNode *tree)
-{
-    quadruple *aux_quadruple;
-    TreeNode *aux;
-    int right, left, aux_value;
-    int adress = 0;
-
-    if (tree->nodekind == statementK)
-    {
-        switch (tree->kind.stmt)
-        {
-        case ifK:
-
-            left = create_quadruple(tree->child[0]);
-            insert(beq, "", "", "");
-            n_line++;
-            assign_quadruple(quadruple_list, regTemporary, left, regTemporary, 0, labelk, n_line);
-            aux_value = n_line;
-            traverse(tree->child[1]);
-
-            if (tree->child[2] == NULL)
-            {
-                insert(label, "", "", "");
-                assign_single_op(quadruple_list, 3, labelk, aux_value);
-                break;
-            }
-            else
-            {
-                insert(jump, "", "", "");
-                n_line++;
-                assign_single_op(quadruple_list, 3, labelk, n_line);
-               
-                insert(label, "", "", "");
-                assign_single_op(quadruple_list, 3, labelk, aux_value);
-
-                traverse(tree->child[2]);
-                insert(label, "", "", "");
-                assign_single_op(quadruple_list, 3, labelk, aux_value+1);
-                
-            }
-            break;
-
-        case whileK:
-
-            insert(label, "", "", "");
-            n_line++;
-            assign_single_op(quadruple_list, 3, labelk, n_line);
-            left = create_quadruple(tree->child[0]);
-
-            insert(beq, "", "", "");
-            n_line++;
-            assign_quadruple(quadruple_list, regTemporary, left, regTemporary, 0, labelk, n_line);
-            aux_value = n_line;
-            traverse(tree->child[1]);
-
-            insert(jump, "", "", "");
-            assign_single_op(quadruple_list, 3, labelk, aux_value - 1);
-           
-
-            insert(label, "", "", "");
-            assign_single_op(quadruple_list, 3, labelk, aux_value);
-
-            break;
-
-        case assignK:
-            right = create_quadruple(tree->child[1]);
-
-            adress = busca_end(tree->child[0]->attr.name, scope_var);
-
-            if (tree->child[0]->child[0] != NULL)
-            {
-
-                left = create_quadruple(tree->child[0]->child[0]);
-                insert(store, tree->child[0]->attr.name, "", "");
-                assign_single_op(quadruple_list, 2, regTemporary, left);
-               
-            }
-            else
-            {
-                insert(store, tree->child[0]->attr.name, "", "");
-            }
-
-            quadruple_list->last->op1.adress = adress;
-            assign_single_op(quadruple_list, 3, regTemporary, right);
-
-            break;
-
-        case returnK:
-            if (tree->child[0] != NULL)
-            {
-                left = create_quadruple(tree->child[0]);
-                insert(ret, "", "", "");
-                assign_single_op(quadruple_list, 1, regTemporary, left);
-            }
-            else
-                insert(ret, "", "", "");
             
+            case tvoid:
+               fprintf(code, "(FUNC,void,%s,-)\n", no->atr.nome);
             break;
 
-        default:
+            case tbool:
+               fprintf(code, "(FUNC,bool,%s,-)\n", no->atr.nome);
             break;
-        }
-    }
-    else if (tree->nodekind == expressionK)
-    {
-        switch (tree->kind.exp)
-        {
-        case operationK:
 
-            if (tree->child[0]->kind.exp != operationK && tree->child[1]->kind.exp == operationK)
-            {
-                right = create_quadruple(tree->child[1]);
-                left = create_quadruple(tree->child[0]);
-            }
-            else
-            {
-                left = create_quadruple(tree->child[0]);
-                right = create_quadruple(tree->child[1]);
-            }
-            insert(tree->attr.op, "", "", "");
-            temp_counter++;
-            assign_quadruple(quadruple_list, regTemporary, temp_counter, regTemporary, left, regTemporary, right);
+            default:
+            break;
+         }
+         cGen(no->filho[0]); // args
+
+         //label de começo da função
+         fprintf(code, "(LABEL,L%d,-,-)\n", label);
+         label++;
+         label_func_actual = label;
+         label++;
+
+         cGen(no->filho[1]); // interior função
+
+         //fim da função
+         fprintf(code, "(LABEL,L%d,-,-)\n", label_func_actual);
+         fprintf(code, "(END,%s,-,-)\n", no->atr.nome);
+
+      break;
+      
+      case tparam:
+         aux = no->tipo.exp;
+         switch (no->typeExp) {
+            case tint:
+               fprintf(code, "(ARG,int,%s,%s)\n", no->atr.nome, no->atr.escopo);
+            break;
             
-            return temp_counter;
+            case tvoid:
+               fprintf(code, "(ARG,void,%s,%s)\n", no->atr.nome, no->atr.escopo);
             break;
 
-        case constantK:
-            insert(imed, "", "", "");
-            temp_counter_func();
-            assign_single_op(quadruple_list, 1, regTemporary, temp_counter);
-            assign_single_op(quadruple_list, 3, constant, tree->attr.val);
-            
-            return temp_counter;
+            case tbool:
+               fprintf(code, "(ARG,bool,%s,%s)\n", no->atr.nome, no->atr.escopo);
             break;
 
-        case idK:
+            default:
+            break;
+         }
+      break;
 
-            adress = busca_end(tree->attr.name, scope_var);
-            if (tree->child[0] != NULL)
-            {
-                right = create_quadruple(tree->child[0]);
-                insert(load, "", tree->attr.name, "");
-                assign_single_op(quadruple_list, 3, regTemporary, right);
-               
+      case tcall:
+         buscar_irmao = 0;
+         cont = 0;
+         name = no->atr.nome;
+         if (no->filho[0] != NULL) {
+            param = cGen(no->filho[0]);
+            fprintf(code, "(PARAMETRO,$t%d,-,-)\n", param);
+            cont++;
+            brother = no->filho[0]->irmao;
+            while (brother != NULL) {
+               param = cGen(brother);
+               fprintf(code, "(PARAMETRO,$t%d,-,-)\n", param);
+               cont++;
+               brother = brother->irmao;
             }
-            else
-                insert(load, "", "", tree->attr.name);
-            
-            quadruple_list->last->op2.adress = adress;
-            temp_counter_func();
-            assign_single_op(quadruple_list, 1, regTemporary, temp_counter);
-            
-            return temp_counter;
-            break;
+         }
+         fprintf(code, "(CALL,$t%d,%s,%d)\n", temp, name, cont);
+         fprintf(code, "(SOMA,$zero,$v0,$t%d)\n", temp);
+         buscar_irmao = 1;
+         return temp++;
+      break;
+      
+      case treturn:
+         ret = cGen(no->filho[0]);
+         fprintf(code, "(SOMA,$zero,$t%d,$v0)\n", ret);
+         fprintf(code, "(RETURN,$v0,-,-)\n");
+         fprintf(code, "(GOTO,L%d,-,-)\n", label_func_actual);
+      break;
 
-        case variableK:
-
-            adress = busca_end(tree->attr.name, scope_var);
-            if (tree->child[0] != NULL)
-            {
-                if (tree->child[0]->kind.exp == constantK)
-                {
-                    insert(alloc, tree->attr.name, "", scope_var);
-                    assign_single_op(quadruple_list, 2, constant, tree->child[0]->attr.val); 
-                }
-            }
-            else
-            {
-                insert(alloc, tree->attr.name, "", scope_var);
-                assign_single_op(quadruple_list, 2, constant, 1);
-            }
-            quadruple_list->last->op1.adress = adress;
-            break;
-
-        case functionK:
-            insert(fun, tree->attr.name, "", "");
-            scope_var = tree->attr.name;
-            n_line++;
-            quadruple_list->last->op1.value = n_line;
-            traverse(tree->child[0]);
-            traverse(tree->child[1]);
-            break;
-
-        case activationK:
-
-            aux = tree->child[0];
-            while (aux != NULL)
-            {
-                aux_value = create_quadruple(aux);
-                insert(setArg, "", "", "");
-                assign_single_op(quadruple_list, 3, regTemporary, aux_value);
-                
-                aux = aux->sibling;
-            }
-            insert(call, "", "", tree->attr.name);
-
-            if (getFunType(tree->attr.name) == INTTYPE)
-            {
-                if (strcmp(tree->attr.name, "output") != 0)
-                {
-                    temp_counter_func();
-                    assign_single_op(quadruple_list, 1, regTemporary, temp_counter);   
-                }
-            }
-            return temp_counter;
-            break;
-
-        case typeK:
-            traverse(tree->child[0]);
-            break;
-
-        case paramK:
-            adress = busca_end(tree->attr.name, scope_var);
-            insert(arg, tree->attr.name, "", scope_var);
-            quadruple_list->last->op1.adress = adress;
-            break;
-
-        default:
-            break;
-        }
-    }
-    return -1;
+      default:
+      break;
+   }
 }
 
-void traverse(TreeNode *t)
-{
+static int genExp (Node *no) {
+   int aux1, aux2, aux3;
+   // int assign;
+   int operando1, operando2;
+   switch (no->tipo.exp) {
+      case op:
+         operando1 = cGen(no->filho[0]);
+         operando2 = cGen(no->filho[1]);
 
-    if (t != NULL)
-    {
-        create_quadruple(t);
-        traverse(t->sibling);
-        if (t->nodekind == expressionK && t->kind.exp == functionK)
-        {
-            insert(end, t->attr.name, "", "");
-        }
-    }
+         switch (no->atr.op) {
+            case SOMA:
+               fprintf(code, "(SOMA,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case SUB:
+               fprintf(code, "(SUB,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case MULT:
+               fprintf(code, "(MULT,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case DIV:
+               fprintf(code, "(DIV,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case EHIGUAL:
+               // como é if false, pula quando é diferente
+               fprintf(code, "(DIFERENTE,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case DIFERENTE:
+               // como é if false, pula quando é igual
+               fprintf(code, "(IGUAL,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case MENOR:
+               // como é if false, pula quando é maior ou igual
+               fprintf(code, "(MAIORIGUAL,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case MAIOR:
+               // como é if false, pula quando é menor ou igual
+               fprintf(code, "(MENORIGUAL,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case MENORIGUAL:
+               // como é if false, pula quando é maior
+               fprintf(code, "(MAIOR,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            case MAIORIGUAL:
+               // como é if false, pula quando é menor
+               fprintf(code, "(MENOR,$t%d,$t%d,$t%d)\n", operando1, operando2, temp);
+            break;
+
+            default:
+            break;
+         }
+         return temp++;
+      break;
+      
+      case constante:
+         fprintf(code, "(CONST,$t%d,%d,-)\n", temp, no->atr.val);
+         return temp++;
+      break;
+      
+      case id:
+         if (strcmp(eh_vetor(no->atr.nome, "global"), "sim") == 0 || strcmp(eh_vetor(no->atr.nome, no->atr.escopo), "sim") == 0 ){
+            fprintf(code, "(LOAD_VARG,$t%d,%s,-)\n", temp, no->atr.nome);
+         }
+         else {
+            fprintf(code, "(LOAD,$t%d,%s,-)\n", temp, no->atr.nome);
+         }
+         return temp++;
+      break;
+      
+      case vector:
+         aux1 = cGen(no->filho[0]); // temp que vai guardar o indice do vetor
+
+         if (strcmp(eh_parametro(no->atr.nome, no->atr.escopo), "sim") == 0)
+            fprintf(code, "(LOAD_VP,$t%d,%s,$t%d)\n", temp, no->atr.nome, aux1);
+         else
+            fprintf(code, "(LOAD_V,$t%d,%s,$t%d)\n", temp, no->atr.nome, aux1);
+         // }
+         aux2 = temp;
+         temp++;
+         return aux2;
+      break;
+      
+      case type:
+         cGen(no->filho[0]);
+      break;
+
+      default:
+      break;
+   }
 }
 
-void generate_intermediate_code(TreeNode *tree)
-{
-    quadruple_list = (lista *)malloc(sizeof(lista));
+static int cGen (Node * no) { 
+   int auxTemp = -1;
+   if (no != NULL) { 
+      switch (no->tipoNo) {
+         case declaration:
+            auxTemp = genDcl(no);
+            break;
 
-    quadruple_list->first = NULL;
-    quadruple_list->last = NULL;
-    quadruple_list->tamanho = 0;
+         case expression:
+            auxTemp = genExp(no);
+            break;
 
-    insert(nop, "", "", "");
-    traverse(tree);
-    insert(halt, "", "", "");
-    print_quadruple(quadruple_list->first);
-    generate_assembly();
+         default:
+            break;
+      }
+    if (no->irmao != NULL && buscar_irmao == 1) 
+      auxTemp = cGen(no->irmao);
+  }
+  return auxTemp;
+}
+
+int returnLabel() {
+   return label;
+}
+
+void intermediarioGen(Node * syntaxTree, char * codefile) {  
+   char * s = malloc(strlen(codefile)+7);
+   strcpy(s, "File: ");
+   strcat(s, codefile);
+
+   emitComment("Gerador de código intermediário");
+   emitComment(s);
+
+   fprintf(code, "Código intermediário:\n");
+
+   cGen(syntaxTree);
+
+   emitComment("End of execution.");
 }
